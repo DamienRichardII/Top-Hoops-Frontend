@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Top Hoops</title>
+  <meta name="description" content="Contacte Top Hoops : inscription, partenariat, demande média ou question. Email, Instagram et YouTube de la ligue.">
+  <link rel="icon" href="assets/logo/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo/favicon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil Top Hoops">
+        <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+        <span>TOP<b>HOOPS</b></span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">Accueil</a>
+        <a href="summerleague.html">Summer League</a>
+        <a href="livestream.html">Livestream</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html" class="active">Contact</a>
+        <a href="summerleague.html" class="btn btn--primary btn--sm">S'inscrire</a>
+      </nav>
+      <div class="header-cta">
+        <a href="summerleague.html" class="btn btn--primary btn--sm">S'inscrire</a>
+        <button class="account-btn" id="accountBtn" type="button" aria-label="Espace abonné" title="Espace abonné">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </button>
+        <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="padding-bottom:24px">
+    <div class="court-lines" aria-hidden="true"><div class="court-circle c1"></div></div>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">On t'écoute</span>
+        <h1 class="hero-title" style="font-size:clamp(2.2rem,6vw,3.6rem)">Contact <span class="text-cyan">Top Hoops</span></h1>
+        <p class="section-sub">Une question, une inscription, un partenariat ou une demande média ? Écris-nous.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COORDONNÉES + FORMULAIRE ============ -->
+  <section class="section" style="padding-top:10px">
+    <div class="container">
+      <div class="grid" style="grid-template-columns:0.9fr 1.1fr;gap:32px" >
+        <!-- Coordonnées -->
+        <div class="reveal">
+          <h2 class="section-title" style="font-size:1.6rem">Nos coordonnées</h2>
+          <ul class="contact-list">
+            <li>
+              <span class="c-ico">✉️</span>
+              <div><span class="lbl">Email</span><a href="mailto:tophoops24@gmail.com">tophoops24@gmail.com</a></div>
+            </li>
+            <li>
+              <span class="c-ico">📸</span>
+              <div><span class="lbl">Instagram</span><a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener">@tophoops24</a></div>
+            </li>
+            <li>
+              <span class="c-ico">▶️</span>
+              <div><span class="lbl">YouTube</span><a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">@TOPHOOPS24</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Formulaire -->
+        <!-- Site statique : envoi via mailto pré-rempli vers tophoops24@gmail.com. -->
+        <form class="form-wrap reveal"
+              data-mailto="tophoops24@gmail.com"
+              data-subject="Message via le site Top Hoops"
+              data-success="Merci ! Ton message est prêt à être envoyé à Top Hoops depuis ta messagerie.">
+          <div class="form-grid">
+            <div class="field full"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
+            <div class="field full"><label>Email <span class="req">*</span></label><input type="email" name="email" data-label="Email" required></div>
+            <div class="field full"><label>Sujet <span class="req">*</span></label><input type="text" name="sujet" data-label="Sujet" required></div>
+            <div class="field full"><label>Message <span class="req">*</span></label><textarea name="message" data-label="Message" required></textarea></div>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block" style="margin-top:18px">Envoyer le message</button>
+          <div class="form-feedback" role="status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+            <b>TOP HOOPS</b>
+          </div>
+          <p class="section-sub" style="max-width:34ch">Top Hoops — Ligue, contenus, communauté et culture basket.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener" aria-label="Instagram Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" aria-label="YouTube Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html">Accueil</a>
+          <a href="summerleague.html">Summer League</a>
+          <a href="livestream.html">Livestream</a>
+          <a href="gallery.html">Galerie</a>
+          <a href="shop.html">Shop</a>
+          <a href="subscribe.html">Espace abonné</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:tophoops24@gmail.com">tophoops24@gmail.com</a>
+          <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener">Instagram @tophoops24</a>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">YouTube @TOPHOOPS24</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Top Hoops. Tous droits réservés.</span>
+        <span>Site réalisé par <a href="#">DamCompany</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

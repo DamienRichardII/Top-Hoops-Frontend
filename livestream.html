@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Livestream & Replays — Top Hoops</title>
+  <meta name="description" content="Lives, replays, highlights et contenus exclusifs de Top Hoops. Retrouve la chaîne YouTube et les vidéos de la ligue.">
+  <link rel="icon" href="assets/logo/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo/favicon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil Top Hoops">
+        <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+        <span>TOP<b>HOOPS</b></span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">Accueil</a>
+        <a href="summerleague.html">Summer League</a>
+        <a href="livestream.html" class="active">Livestream</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html">Contact</a>
+        <a href="summerleague.html" class="btn btn--primary btn--sm">S'inscrire</a>
+      </nav>
+      <div class="header-cta">
+        <a href="summerleague.html" class="btn btn--primary btn--sm">S'inscrire</a>
+        <button class="account-btn" id="accountBtn" type="button" aria-label="Espace abonné" title="Espace abonné">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </button>
+        <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="padding-bottom:20px">
+    <div class="court-lines" aria-hidden="true"><div class="court-circle c1"></div></div>
+    <div class="container">
+      <div class="section-head left reveal" style="max-width:640px">
+        <span class="eyebrow">Média Top Hoops</span>
+        <h1 class="hero-title" style="font-size:clamp(2.2rem,6vw,3.6rem)">Livestream <span class="text-cyan">& Replays</span></h1>
+        <p class="hero-text" style="max-width:52ch">Retrouve les lives, replays, highlights et contenus exclusifs de Top Hoops.</p>
+        <div class="hero-cta">
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" class="btn btn--primary">Voir la chaîne YouTube</a>
+          <a href="subscribe.html" class="btn btn--ghost">S'abonner</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BLOC LIVE PRINCIPAL ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="live-hero reveal">
+        <img class="bg" src="assets/DSC03706.jpg" alt="Ambiance de match Top Hoops">
+        <div class="live-body">
+          <span class="badge badge--live">Prochainement</span>
+          <h2>Top Hoops Live</h2>
+          <p>Les prochains lives seront diffusés ici. Suis la chaîne pour ne rien manquer des matchs et des directs.</p>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" class="btn btn--primary">Ouvrir YouTube</a>
+        </div>
+      </div>
+      <!-- Lecteur live AUTOMATIQUE : affiche le direct en cours de la chaine Top Hoops.
+           Des que Lamine lance un live YouTube (appli mobile ou OBS), il apparait ici tout seul.
+           channel = ID de la chaine @TOPHOOPS24. Fonctionne une fois le site mis en ligne
+           (sur un vrai domaine) ; en ouverture locale du fichier, YouTube peut afficher une erreur. -->
+      <div class="embed" style="margin-top:22px">
+        <iframe
+          src="https://www.youtube.com/embed/live_stream?channel=UCEUXcwXFiB8z0ZIeTg3lsKQ"
+          title="Top Hoops Live"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIVES RÉCENTS ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="rail-head reveal"><h2>Lives récents</h2><a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">Voir tout →</a></div>
+      <div class="rail reveal">
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03688.jpg" alt="Top Hoops Live Session"><span class="badge">Replay</span><span class="duration">1:12:40</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Top Hoops Live Session</h4><span>Direct complet</span></div>
+        </article>
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03692.jpg" alt="Summer League Live"><span class="badge">Replay</span><span class="duration">54:18</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Summer League Live</h4><span>Match de la soirée</span></div>
+        </article>
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03709.jpg" alt="Game Night Replay"><span class="badge">Replay</span><span class="duration">47:02</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Game Night Replay</h4><span>Rediffusion</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HIGHLIGHTS ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="rail-head reveal"><h2>Highlights</h2><a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">Voir tout →</a></div>
+      <div class="rail reveal">
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03697.jpg" alt="Top Plays Top Hoops"><span class="badge">Exclusif</span><span class="duration">04:36</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Top Plays</h4><span>Les meilleures actions</span></div>
+        </article>
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03699.jpg" alt="Best Handles Top Hoops"><span class="badge">Exclusif</span><span class="duration">03:58</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Best Handles</h4><span>Dribbles & crossovers</span></div>
+        </article>
+        <article class="video-card">
+          <div class="video-thumb"><img src="assets/DSC03742.jpg" alt="Clutch Moments Top Hoops"><span class="badge">Exclusif</span><span class="duration">05:22</span><span class="play">▶</span></div>
+          <div class="video-meta"><h4>Clutch Moments</h4><span>Les fins de match</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTENUS ABONNÉS (verrouillés) ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="rail-head reveal"><h2>Contenus abonnés</h2><a href="subscribe.html">Débloquer →</a></div>
+      <!-- PROTOTYPE STATIQUE : le verrou est purement visuel (localStorage).
+           L'accès réel aux vidéos premium devra être sécurisé par un backend
+           ou une plateforme membre. -->
+      <div class="rail reveal">
+        <article class="video-card locked">
+          <div class="video-thumb">
+            <img src="assets/DSC03716.jpg" alt="Replay exclusif Top Hoops">
+            <span class="badge badge--soon">Premium</span>
+            <div class="lock-overlay"><span class="lock-ico">🔒</span><p>Réservé aux abonnés</p><button class="btn btn--primary btn--sm" data-unlock>Débloquer</button></div>
+          </div>
+          <div class="video-meta"><h4>Replay exclusif</h4><span>Match complet en accès membre</span></div>
+        </article>
+        <article class="video-card locked">
+          <div class="video-thumb">
+            <img src="assets/DSC03733.jpg" alt="Interview complète Top Hoops">
+            <span class="badge badge--soon">Premium</span>
+            <div class="lock-overlay"><span class="lock-ico">🔒</span><p>Réservé aux abonnés</p><button class="btn btn--primary btn--sm" data-unlock>Débloquer</button></div>
+          </div>
+          <div class="video-meta"><h4>Interview complète</h4><span>Face à MisterPvris</span></div>
+        </article>
+        <article class="video-card locked">
+          <div class="video-thumb">
+            <img src="assets/DSC03730.jpg" alt="Behind the scenes Top Hoops">
+            <span class="badge badge--soon">Premium</span>
+            <div class="lock-overlay"><span class="lock-ico">🔒</span><p>Réservé aux abonnés</p><button class="btn btn--primary btn--sm" data-unlock>Débloquer</button></div>
+          </div>
+          <div class="video-meta"><h4>Behind the scenes</h4><span>Coulisses de la ligue</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+            <b>TOP HOOPS</b>
+          </div>
+          <p class="section-sub" style="max-width:34ch">Top Hoops — Ligue, contenus, communauté et culture basket.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener" aria-label="Instagram Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" aria-label="YouTube Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html">Accueil</a>
+          <a href="summerleague.html">Summer League</a>
+          <a href="livestream.html">Livestream</a>
+          <a href="gallery.html">Galerie</a>
+          <a href="shop.html">Shop</a>
+          <a href="subscribe.html">Espace abonné</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:tophoops24@gmail.com">tophoops24@gmail.com</a>
+          <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener">Instagram @tophoops24</a>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">YouTube @TOPHOOPS24</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Top Hoops. Tous droits réservés.</span>
+        <span>Site réalisé par <a href="#">DamCompany</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
