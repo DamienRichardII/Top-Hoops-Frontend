@@ -816,14 +816,17 @@ p { margin: 0 0 1rem; }
     flex-direction: column;
     align-items: stretch;
     gap: 2px;
-    background: rgba(6,8,11,0.97);
+    background: rgba(6,8,11,0.98);
     backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
     padding: 14px 20px 22px;
     transform: translateY(-140%);
     transition: transform .35s cubic-bezier(.4,0,.2,1);
     max-height: calc(100vh - var(--header-h));
     overflow-y: auto;
+    z-index: 120;               /* au-dessus du contenu (sections z-index:1) */
   }
   .nav.open { transform: translateY(0); }
   .nav a { padding: 14px 8px; font-size: 1.05rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -932,7 +935,8 @@ p { margin: 0 0 1rem; }
 
 /* ---------- RAILS DE LOGOS DÉFILANTS (décoratifs) ---------- */
 /* Les rails restent en arrière-plan ; le contenu passe au-dessus. */
-.site-header,
+/* NB : ne PAS inclure .site-header ici (il garde son z-index:100 pour rester
+   au-dessus du contenu et du menu mobile déroulant). */
 .site-footer,
 body > section { position: relative; z-index: 1; }
 
