@@ -828,7 +828,7 @@ p { margin: 0 0 1rem; }
   .nav.open { transform: translateY(0); }
   .nav a { padding: 14px 8px; font-size: 1.05rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .burger { display: flex; }
-  .header-cta .btn:not(.burger) { display: none; }  /* CTA repris dans le menu mobile */
+  /* CTA S'inscrire visible aussi sur mobile (a cote de l'icone) */
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .stats-strip { grid-template-columns: repeat(2, 1fr); }
