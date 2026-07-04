@@ -980,3 +980,11 @@ body > section { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
   .logo-rail-track { animation: none; }
 }
+
+/* ---------- HERO VISUEL : variante AFFICHE / POSTER (index) ---------- */
+.hero-visual.poster { background: #06080B; }
+.hero-visual.poster::after { display: none; }          /* pas d'assombrissement sur l'affiche */
+.hero-visual.poster img {
+  object-fit: contain;      /* affiche entiere, rien de coupe */
+  background: #06080B;
+}
