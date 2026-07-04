@@ -14,6 +14,32 @@
 </head>
 <body>
 
+  <!-- Rails de logos decoratifs (arriere-plan, masques sur mobile) -->
+  <div class="logo-rail logo-rail-left" aria-hidden="true">
+    <div class="logo-rail-track">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+  <div class="logo-rail logo-rail-right" aria-hidden="true">
+    <div class="logo-rail-track logo-rail-track-reverse">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+
   <!-- ============ HEADER ============ -->
   <header class="site-header">
     <div class="header-inner">
@@ -67,15 +93,52 @@
           </div>
         </div>
       </div>
-
-      <div class="stats-strip reveal">
-        <div class="stat"><b>Summer League</b><span>Tournoi estival</span></div>
-        <div class="stat"><b>Lives</b><span>YouTube & Insta</span></div>
-        <div class="stat"><b>Highlights</b><span>Top plays</span></div>
-        <div class="stat"><b>Communauté</b><span>Culture basket</span></div>
-      </div>
     </div>
   </section>
+
+  <!-- Mini bloc video sous le hero (3 videos YouTube) -->
+  <div class="hero-video-strip reveal">
+    <article class="hero-video-card">
+      <span class="mini-video-badge">Replay</span>
+      <div class="video-frame compact">
+        <iframe src="https://www.youtube.com/embed/9fOHKdsrOeY?start=138" title="Top Hoops Replay"
+          loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <a class="mini-video-link" href="https://www.youtube.com/watch?v=9fOHKdsrOeY&t=138s" target="_blank" rel="noopener">Voir sur YouTube</a>
+    </article>
+    <article class="hero-video-card">
+      <span class="mini-video-badge live">Live</span>
+      <div class="video-frame compact">
+        <iframe src="https://www.youtube.com/embed/UdP8MLbFMfU?start=463" title="Top Hoops Live"
+          loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <a class="mini-video-link" href="https://www.youtube.com/watch?v=UdP8MLbFMfU&t=463s" target="_blank" rel="noopener">Voir sur YouTube</a>
+    </article>
+    <article class="hero-video-card">
+      <span class="mini-video-badge">Highlight</span>
+      <div class="video-frame compact">
+        <iframe src="https://www.youtube.com/embed/sBTL1Z9yxH8?start=7" title="Top Hoops Highlights"
+          loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <a class="mini-video-link" href="https://www.youtube.com/watch?v=sBTL1Z9yxH8&t=7s" target="_blank" rel="noopener">Voir sur YouTube</a>
+    </article>
+  </div>
+
+  <!-- 4 blocs categories (Summer League / Lives / Highlights / Communaute) -->
+  <div class="container" style="margin-bottom:52px;position:relative;z-index:1">
+    <div class="stats-strip reveal" style="margin-top:0">
+      <div class="stat"><b>Summer League</b><span>Tournoi estival</span></div>
+      <div class="stat"><b>Lives</b><span>YouTube & Insta</span></div>
+      <div class="stat"><b>Highlights</b><span>Top plays</span></div>
+      <div class="stat"><b>Communauté</b><span>Culture basket</span></div>
+    </div>
+  </div>
 
   <!-- ============ À PROPOS ============ -->
   <section class="section">
