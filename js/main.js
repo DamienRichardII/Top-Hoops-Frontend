@@ -352,4 +352,25 @@
     el.textContent = new Date().getFullYear();
   });
 
+  /* ---------- 9. PAGE INSCRIPTION : choix du parcours + query param ---------- */
+  var regChoice = document.querySelector(".reg-choice");
+  if (regChoice) {
+    var regCards = regChoice.querySelectorAll("[data-reg]");
+    var showRegistrationForm = function (type, doScroll) {
+      document.querySelectorAll(".reg-form").forEach(function (frm) { frm.hidden = true; });
+      var target = document.getElementById("form-" + type);
+      if (target) target.hidden = false;
+      regCards.forEach(function (c) {
+        c.classList.toggle("active", c.getAttribute("data-reg") === type);
+      });
+      if (target && doScroll) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    regCards.forEach(function (c) {
+      c.addEventListener("click", function () { showRegistrationForm(c.getAttribute("data-reg"), true); });
+    });
+    // Ouverture directe selon l'URL : inscription.html?type=summer|ligue
+    var regType = new URLSearchParams(window.location.search).get("type");
+    if (regType === "summer" || regType === "ligue") { showRegistrationForm(regType, false); }
+  }
+
 })();

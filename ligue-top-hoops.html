@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ligue Top Hoops — Événements 1 contre 1</title>
+  <meta name="description" content="La Ligue Top Hoops 1V1 : des duels directs, du public, des match-ups annoncés et une ambiance basketball unique. Prochain événement le 9 juillet 2026 à Bobigny.">
+  <link rel="icon" href="assets/logo/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo/favicon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Rails de logos decoratifs (arriere-plan, masques sur mobile) -->
+  <div class="logo-rail logo-rail-left" aria-hidden="true">
+    <div class="logo-rail-track">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+  <div class="logo-rail logo-rail-right" aria-hidden="true">
+    <div class="logo-rail-track logo-rail-track-reverse">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil Top Hoops">
+        <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+        <span>TOP<b>HOOPS</b></span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">Accueil</a>
+        <a href="ligue-top-hoops.html" class="active">Ligue Top Hoops</a>
+        <a href="summerleague.html">Summer League</a>
+        <a href="livestream.html">Livestream</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="header-cta">
+        <a href="inscription.html" class="btn btn--primary btn--sm">S'inscrire</a>
+        <button class="account-btn" id="accountBtn" type="button" aria-label="Espace abonné" title="Espace abonné">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </button>
+        <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="court-lines" aria-hidden="true">
+      <div class="court-circle c1"></div>
+      <div class="court-circle c2"></div>
+    </div>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <h1 class="hero-title" style="font-size:clamp(2.4rem,7vw,4.6rem)">Ligue <span class="text-cyan">Top Hoops</span></h1>
+          <div class="hero-cta">
+            <a href="inscription.html?type=ligue" class="btn btn--primary">S'inscrire à la Ligue Top Hoops</a>
+            <a href="#matchup" class="btn btn--ghost">Voir les match-ups</a>
+          </div>
+        </div>
+
+        <!-- Video de presentation du prochain evenement 1V1 (format vertical) -->
+        <div class="league-video-card reveal">
+          <video class="league-event-video"
+            src="assets/videos/tophoops-1v1-lancement.mp4"
+            autoplay muted loop playsinline preload="metadata" controls
+            aria-label="Vidéo de présentation Ligue Top Hoops 1V1"></video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCHAIN ÉVÉNEMENT ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Prochain événement</span>
+        <h2 class="section-title">Top Hoops Acte 1 — 1V1</h2>
+        <p class="section-sub">Le premier rendez-vous de la Ligue Top Hoops. Entrée gratuite, ambiance garantie.</p>
+      </div>
+      <div class="event-info-grid reveal">
+        <article class="event-info-card">
+          <span class="ei-ico">📍</span>
+          <span class="event-info-label">Lieu</span>
+          <strong>Les Prismes — Bobigny</strong>
+        </article>
+        <article class="event-info-card">
+          <span class="ei-ico">📅</span>
+          <span class="event-info-label">Date</span>
+          <strong>9 Juillet 2026</strong>
+        </article>
+        <article class="event-info-card">
+          <span class="ei-ico">⏰</span>
+          <span class="event-info-label">Heure</span>
+          <strong>17H30</strong>
+        </article>
+        <article class="event-info-card">
+          <span class="ei-ico">🎟️</span>
+          <span class="event-info-label">Entrée</span>
+          <strong>Gratuite</strong>
+        </article>
+        <article class="event-info-card">
+          <span class="ei-ico">🔥</span>
+          <span class="event-info-label">Premier match-up</span>
+          <strong>Ozan vs MP</strong>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MATCH-UP ============ -->
+  <section class="section" id="matchup">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Match-up</span>
+        <h2 class="section-title">Les duels officiels</h2>
+        <p class="section-sub">Les duels officiels de la Ligue Top Hoops seront dévoilés progressivement.</p>
+      </div>
+
+      <!-- Premier match-up annonce -->
+      <article class="matchup-card matchup-card-featured reveal">
+        <img src="assets/images/matchups/ozan-vs-mp.jpg" alt="Ozan vs MP - Top Hoops Acte 1">
+        <div class="matchup-card-content">
+          <span class="matchup-status">Match-up annoncé</span>
+          <h3>Ozan vs MP</h3>
+          <p>Premier duel officiel de la Ligue Top Hoops. Rendez-vous le 9 juillet à Bobigny.</p>
+          <a href="inscription.html?type=ligue" class="btn btn--primary btn--sm">S'inscrire à la Ligue</a>
+        </div>
+      </article>
+
+      <!-- Match-ups a venir (placeholders premium) -->
+      <div class="matchup-grid reveal">
+        <article class="matchup-card matchup-card-placeholder">
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur A</span></div>
+          <strong class="versus-mark">VS</strong>
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur B</span></div>
+          <p class="mu-soon">Match-up à venir</p>
+          <span class="mu-note">Affiche officielle bientôt disponible</span>
+        </article>
+        <article class="matchup-card matchup-card-placeholder">
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur C</span></div>
+          <strong class="versus-mark">VS</strong>
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur D</span></div>
+          <p class="mu-soon">Match-up à venir</p>
+          <span class="mu-note">Affiche officielle bientôt disponible</span>
+        </article>
+        <article class="matchup-card matchup-card-placeholder">
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur E</span></div>
+          <strong class="versus-mark">VS</strong>
+          <div class="placeholder-fighter"><span class="player-icon">🏀</span><span>Joueur F</span></div>
+          <p class="mu-soon">Match-up à venir</p>
+          <span class="mu-note">Affiche officielle bientôt disponible</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINALE ============ -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <span class="eyebrow">Prêt pour le 1V1 ?</span>
+        <h2>Entre dans la Ligue Top Hoops</h2>
+        <div class="hero-cta" style="justify-content:center">
+          <a href="inscription.html?type=ligue" class="btn btn--primary">S'inscrire à la Ligue Top Hoops</a>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" class="btn btn--ghost">Suivre sur YouTube</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+            <b>TOP HOOPS</b>
+          </div>
+          <p class="section-sub" style="max-width:34ch">Top Hoops — Ligue, contenus, communauté et culture basket.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener" aria-label="Instagram Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" aria-label="YouTube Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html">Accueil</a>
+          <a href="ligue-top-hoops.html">Ligue Top Hoops</a>
+          <a href="summerleague.html">Summer League</a>
+          <a href="livestream.html">Livestream</a>
+          <a href="gallery.html">Galerie</a>
+          <a href="shop.html">Shop</a>
+          <a href="subscribe.html">Espace abonné</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:tophoops24@gmail.com">tophoops24@gmail.com</a>
+          <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener">Instagram @tophoops24</a>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">YouTube @TOPHOOPS24</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Top Hoops. Tous droits réservés.</span>
+        <span>Site réalisé par <a href="#">DamCompany</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

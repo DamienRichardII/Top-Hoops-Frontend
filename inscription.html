@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription — Top Hoops</title>
+  <meta name="description" content="Inscris-toi à la Summer League ou à la Ligue Top Hoops 1V1. Choisis ton parcours et remplis le formulaire.">
+  <link rel="icon" href="assets/logo/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo/favicon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Rails de logos decoratifs (arriere-plan, masques sur mobile) -->
+  <div class="logo-rail logo-rail-left" aria-hidden="true">
+    <div class="logo-rail-track">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+  <div class="logo-rail logo-rail-right" aria-hidden="true">
+    <div class="logo-rail-track logo-rail-track-reverse">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt="">
+      <img src="assets/logo/th-noir.png" alt="">
+      <img src="assets/logo/th-rouge-blanc.png" alt="">
+      <img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil Top Hoops">
+        <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+        <span>TOP<b>HOOPS</b></span>
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html">Accueil</a>
+        <a href="ligue-top-hoops.html">Ligue Top Hoops</a>
+        <a href="summerleague.html">Summer League</a>
+        <a href="livestream.html">Livestream</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="header-cta">
+        <a href="inscription.html" class="btn btn--primary btn--sm">S'inscrire</a>
+        <button class="account-btn" id="accountBtn" type="button" aria-label="Espace abonné" title="Espace abonné">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </button>
+        <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="padding-bottom:20px">
+    <div class="court-lines" aria-hidden="true"><div class="court-circle c1"></div></div>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Inscription</span>
+        <h1 class="hero-title" style="font-size:clamp(2.2rem,6vw,3.6rem)">Rejoins <span class="text-cyan">Top Hoops</span></h1>
+        <p class="section-sub">Choisis ton parcours : la Summer League estivale ou la Ligue Top Hoops 1V1.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHOIX DU PARCOURS ============ -->
+  <section class="section" style="padding-top:6px">
+    <div class="container" style="max-width:900px">
+      <div class="reg-choice reveal">
+        <button type="button" class="reg-card" data-reg="summer">
+          <span class="reg-ico">☀️</span>
+          <h3>Je m'inscris à la Summer League</h3>
+          <p>Tournoi estival, compétition, visibilité et contenu.</p>
+        </button>
+        <button type="button" class="reg-card" data-reg="ligue">
+          <span class="reg-ico">🔥</span>
+          <h3>Je m'inscris à la Ligue Top Hoops</h3>
+          <p>Le format 1 contre 1 : duels directs et match-ups annoncés.</p>
+        </button>
+      </div>
+
+      <!-- ===== Formulaire SUMMER LEAGUE ===== -->
+      <div class="reg-form" id="form-summer" hidden>
+        <div class="section-head left reveal" style="margin-bottom:20px">
+          <span class="eyebrow">Summer League</span>
+          <h2 class="section-title" style="font-size:1.5rem">Formulaire Summer League</h2>
+        </div>
+        <form class="form-wrap"
+              data-mailto="tophoops24@gmail.com"
+              data-subject="Inscription Summer League Top Hoops"
+              data-success="Merci ! Ton inscription Summer League est prête à être envoyée depuis ta messagerie.">
+          <div class="form-grid">
+            <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" name="prenom" data-label="Prénom" required></div>
+            <div class="field"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
+            <div class="field"><label>Âge <span class="req">*</span></label><input type="number" name="age" data-label="Âge" min="10" max="70" required></div>
+            <div class="field"><label>Email <span class="req">*</span></label><input type="email" name="email" data-label="Email" required></div>
+            <div class="field"><label>Téléphone <span class="req">*</span></label><input type="tel" name="telephone" data-label="Téléphone" required></div>
+            <div class="field"><label>Ville <span class="req">*</span></label><input type="text" name="ville" data-label="Ville" required></div>
+            <div class="field">
+              <label>Poste <span class="req">*</span></label>
+              <select name="poste" data-label="Poste" required>
+                <option value="" disabled selected>Choisir un poste</option>
+                <option>Meneur</option><option>Arrière</option><option>Ailier</option>
+                <option>Ailier fort</option><option>Pivot</option><option>Polyvalent</option>
+              </select>
+            </div>
+            <div class="field"><label>Taille (cm)</label><input type="number" name="taille" data-label="Taille (cm)" min="140" max="240"></div>
+            <div class="field">
+              <label>Niveau <span class="req">*</span></label>
+              <select name="niveau" data-label="Niveau" required>
+                <option value="" disabled selected>Choisir un niveau</option>
+                <option>Loisir</option><option>Club</option><option>Régional</option>
+                <option>National</option><option>Semi-pro</option><option>Pro</option>
+              </select>
+            </div>
+            <div class="field"><label>Instagram</label><input type="text" name="instagram" data-label="Instagram" placeholder="@pseudo"></div>
+            <div class="field full"><label>Message complémentaire</label><textarea name="message" data-label="Message"></textarea></div>
+            <div class="field full">
+              <label class="check">
+                <input type="checkbox" name="consentement" data-label="Consentement contact" required>
+                <span>J'accepte d'être contacté par Top Hoops concernant mon inscription. <span class="req">*</span></span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block" style="margin-top:20px">Envoyer mon inscription Summer League</button>
+          <div class="form-feedback" role="status"></div>
+        </form>
+      </div>
+
+      <!-- ===== Formulaire LIGUE TOP HOOPS 1V1 ===== -->
+      <div class="reg-form" id="form-ligue" hidden>
+        <div class="section-head left reveal" style="margin-bottom:20px">
+          <span class="eyebrow">Ligue Top Hoops 1V1</span>
+          <h2 class="section-title" style="font-size:1.5rem">Formulaire Ligue Top Hoops</h2>
+        </div>
+        <form class="form-wrap"
+              data-mailto="tophoops24@gmail.com"
+              data-subject="Inscription Ligue Top Hoops 1V1"
+              data-success="Merci ! Ton inscription Ligue Top Hoops est prête à être envoyée depuis ta messagerie.">
+          <div class="form-grid">
+            <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" name="prenom" data-label="Prénom" required></div>
+            <div class="field"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
+            <div class="field"><label>Âge <span class="req">*</span></label><input type="number" name="age" data-label="Âge" min="10" max="70" required></div>
+            <div class="field"><label>Email <span class="req">*</span></label><input type="email" name="email" data-label="Email" required></div>
+            <div class="field"><label>Téléphone <span class="req">*</span></label><input type="tel" name="telephone" data-label="Téléphone" required></div>
+            <div class="field"><label>Ville <span class="req">*</span></label><input type="text" name="ville" data-label="Ville" required></div>
+            <div class="field">
+              <label>Poste <span class="req">*</span></label>
+              <select name="poste" data-label="Poste" required>
+                <option value="" disabled selected>Choisir un poste</option>
+                <option>Meneur</option><option>Arrière</option><option>Ailier</option>
+                <option>Ailier fort</option><option>Pivot</option><option>Polyvalent</option>
+              </select>
+            </div>
+            <div class="field"><label>Taille (cm)</label><input type="number" name="taille" data-label="Taille (cm)" min="140" max="240"></div>
+            <div class="field">
+              <label>Niveau <span class="req">*</span></label>
+              <select name="niveau" data-label="Niveau" required>
+                <option value="" disabled selected>Choisir un niveau</option>
+                <option>Loisir</option><option>Club</option><option>Régional</option>
+                <option>National</option><option>Semi-pro</option><option>Pro</option>
+              </select>
+            </div>
+            <div class="field"><label>Instagram</label><input type="text" name="instagram" data-label="Instagram" placeholder="@pseudo"></div>
+            <div class="field">
+              <label>Disponible le 9 juillet 2026 à 17H30 ? <span class="req">*</span></label>
+              <select name="dispo" data-label="Disponible le 9 juillet 17H30" required>
+                <option value="" disabled selected>Choisir</option>
+                <option>Oui</option><option>Non</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Déjà participé à un événement Top Hoops ? <span class="req">*</span></label>
+              <select name="deja_participe" data-label="Déjà participé à un événement Top Hoops" required>
+                <option value="" disabled selected>Choisir</option>
+                <option>Oui</option><option>Non</option>
+              </select>
+            </div>
+            <div class="field full"><label>Pourquoi veux-tu participer à la Ligue Top Hoops 1V1 ?</label><textarea name="motivation" data-label="Motivation 1V1"></textarea></div>
+            <div class="field full">
+              <label class="check">
+                <input type="checkbox" name="consentement" data-label="Consentement contact" required>
+                <span>J'accepte d'être contacté par Top Hoops concernant mon inscription. <span class="req">*</span></span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block" style="margin-top:20px">Envoyer mon inscription Ligue Top Hoops</button>
+          <div class="form-feedback" role="status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+            <b>TOP HOOPS</b>
+          </div>
+          <p class="section-sub" style="max-width:34ch">Top Hoops — Ligue, contenus, communauté et culture basket.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener" aria-label="Instagram Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener" aria-label="YouTube Top Hoops">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3V9z" fill="currentColor" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html">Accueil</a>
+          <a href="ligue-top-hoops.html">Ligue Top Hoops</a>
+          <a href="summerleague.html">Summer League</a>
+          <a href="livestream.html">Livestream</a>
+          <a href="gallery.html">Galerie</a>
+          <a href="shop.html">Shop</a>
+          <a href="subscribe.html">Espace abonné</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:tophoops24@gmail.com">tophoops24@gmail.com</a>
+          <a href="https://www.instagram.com/tophoops24/?hl=fr" target="_blank" rel="noopener">Instagram @tophoops24</a>
+          <a href="https://www.youtube.com/@TOPHOOPS24" target="_blank" rel="noopener">YouTube @TOPHOOPS24</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Top Hoops. Tous droits réservés.</span>
+        <span>Site réalisé par <a href="#">DamCompany</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
