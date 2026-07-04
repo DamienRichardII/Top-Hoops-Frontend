@@ -1126,3 +1126,77 @@ body > section { position: relative; z-index: 1; }
   .matchup-grid { grid-template-columns: 1fr; }
   .reg-choice { grid-template-columns: 1fr; }
 }
+
+/* =====================================================================
+   AJOUTS — HERO LIGUE (5 photos + overlay) + ICÔNES CYAN
+   ===================================================================== */
+
+/* ---------- Hero Ligue : fond photos + overlay bleuté ---------- */
+.hero--league { min-height: 78vh; display: flex; align-items: center; border-bottom: 1px solid rgba(133,218,237,0.14); }
+.hero--league .container { position: relative; z-index: 2; }
+.hero--league .hero-title { text-shadow: 0 0 40px rgba(133,218,237,0.25); }
+
+.league-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  opacity: 0.38;
+  transform: scale(1.04);
+}
+.league-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(0.95) contrast(1.05); }
+.league-hero-bg img:nth-child(1) { grid-row: span 2; }   /* grande photo à gauche */
+
+.league-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(6,8,11,0.95) 0%, rgba(6,8,11,0.74) 42%, rgba(6,8,11,0.42) 100%),
+    linear-gradient(135deg, rgba(133,218,237,0.20), rgba(45,74,85,0.16), rgba(6,8,11,0.72));
+}
+
+@media (max-width: 768px) {
+  .hero--league { min-height: 72vh; }
+  .league-hero-bg {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    opacity: 0.30;
+  }
+  .league-hero-bg img:nth-child(1) { grid-row: auto; }
+  .league-hero-overlay {
+    background:
+      linear-gradient(180deg, rgba(6,8,11,0.78), rgba(6,8,11,0.93)),
+      linear-gradient(135deg, rgba(133,218,237,0.20), rgba(6,8,11,0.82));
+  }
+}
+
+/* ---------- Icônes cyan (remplacement des emojis) ---------- */
+.icon-cyan {
+  width: 22px;
+  height: 22px;
+  color: var(--cyan-main);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 10px rgba(133,218,237,0.22));
+}
+/* Tailles adaptées selon le conteneur */
+.card-icon .icon-cyan { width: 26px; height: 26px; }
+.ei-ico .icon-cyan { width: 26px; height: 26px; }
+.player-icon .icon-cyan { width: 28px; height: 28px; }
+.c-ico .icon-cyan { width: 22px; height: 22px; }
+.reg-ico .icon-cyan { width: 34px; height: 34px; }
+.lock-ico .icon-cyan { width: 26px; height: 26px; }
+.video-thumb .play .icon-cyan { width: 20px; height: 20px; }
+.soon-hourglass .icon-cyan { width: clamp(3rem, 9vw, 4.4rem); height: auto; }
+/* Le sablier animé : l'icône hérite de l'animation du conteneur */
+.soon-hourglass { display: inline-block; }
