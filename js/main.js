@@ -347,6 +347,67 @@
   }
   document.querySelectorAll("form[data-mailto]").forEach(handleMailForm);
 
+  /* ---------- 7b. FORMULAIRES INSCRIPTION -> BACKEND (fetch) ---------- */
+  // Correspondance champs FR -> clés backend
+  var FIELD_MAP = {
+    prenom: "first_name", nom: "last_name", age: "age", email: "email",
+    telephone: "phone", ville: "city", poste: "position", taille: "height",
+    niveau: "level", instagram: "instagram", message: "message",
+    dispo: "available_for_event", deja_participe: "already_participated",
+    motivation: "motivation", consentement: "consent"
+  };
+
+  function apiBase() { return (window.TOP_HOOPS_API_URL || "http://localhost:3001").replace(/\/$/, ""); }
+
+  function handleApiForm(form) {
+    var feedback = form.querySelector(".form-feedback");
+    var eventType = form.getAttribute("data-event-type");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      var payload = { event_type: eventType };
+      form.querySelectorAll("input, select, textarea").forEach(function (el) {
+        if (!el.name) return;
+        var key = FIELD_MAP[el.name] || el.name;
+        payload[key] = (el.type === "checkbox") ? el.checked : el.value.trim();
+      });
+
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = "Envoi..."; }
+
+      fetch(apiBase() + "/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label; }
+        if (feedback) { feedback.classList.add("show"); }
+        if (res.ok) {
+          if (feedback) {
+            feedback.style.color = "";
+            feedback.textContent = form.getAttribute("data-success") || "Merci, ton inscription a bien été envoyée à Top Hoops.";
+          }
+          form.reset();
+        } else if (feedback) {
+          feedback.style.color = "#ff8f8f";
+          feedback.textContent = (res.d && res.d.error) ? res.d.error : "Une erreur est survenue. Merci de réessayer.";
+        }
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label; }
+        if (feedback) {
+          feedback.classList.add("show");
+          feedback.style.color = "#ff8f8f";
+          feedback.textContent = "Une erreur est survenue. Merci de réessayer.";
+        }
+      });
+    });
+  }
+  document.querySelectorAll('form[data-api="registrations"]').forEach(handleApiForm);
+
   /* ---------- 8. ANNEE DYNAMIQUE FOOTER ---------- */
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = new Date().getFullYear();

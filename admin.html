@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Espace Admin — Top Hoops</title>
+  <link rel="icon" href="assets/logo/favicon-32.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+  <!-- Rails de logos decoratifs -->
+  <div class="logo-rail logo-rail-left" aria-hidden="true">
+    <div class="logo-rail-track">
+      <img src="assets/logo/th-bleu-blanc.png" alt=""><img src="assets/logo/th-noir.png" alt=""><img src="assets/logo/th-rouge-blanc.png" alt=""><img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt=""><img src="assets/logo/th-noir.png" alt=""><img src="assets/logo/th-rouge-blanc.png" alt=""><img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+  <div class="logo-rail logo-rail-right" aria-hidden="true">
+    <div class="logo-rail-track logo-rail-track-reverse">
+      <img src="assets/logo/th-bleu-blanc.png" alt=""><img src="assets/logo/th-noir.png" alt=""><img src="assets/logo/th-rouge-blanc.png" alt=""><img src="assets/logo/th-blanc.png" alt="">
+      <img src="assets/logo/th-bleu-blanc.png" alt=""><img src="assets/logo/th-noir.png" alt=""><img src="assets/logo/th-rouge-blanc.png" alt=""><img src="assets/logo/th-blanc.png" alt="">
+    </div>
+  </div>
+
+  <!-- ============ LOGIN (affiché si non connecté) ============ -->
+  <section class="admin-auth" id="loginView" hidden>
+    <div class="admin-auth-card">
+      <img class="brand-logo" src="assets/logo/logo-tophoops.png" alt="Top Hoops">
+      <h1>Admin <span class="text-cyan">Top Hoops</span></h1>
+      <p class="section-sub" style="margin-bottom:20px">Espace réservé à la gestion des inscriptions.</p>
+
+      <!-- Connexion -->
+      <form id="loginForm" autocomplete="off">
+        <div class="field"><label>Identifiant</label><input type="text" id="loginUser" name="username" required></div>
+        <div class="field"><label>Mot de passe</label><input type="password" id="loginPass" name="password" required></div>
+        <button type="submit" class="btn btn--primary btn--block" style="margin-top:8px">Se connecter</button>
+        <button type="button" class="link-btn" id="showForgot">Mot de passe oublié ?</button>
+        <div class="form-feedback" id="loginFeedback" role="status"></div>
+      </form>
+
+      <!-- Mot de passe oublié -->
+      <form id="forgotForm" autocomplete="off" hidden>
+        <p class="section-sub" style="font-size:.9rem">Entre l'email admin pour recevoir un lien de réinitialisation.</p>
+        <div class="field"><label>Email admin</label><input type="email" id="forgotEmail" required></div>
+        <button type="submit" class="btn btn--primary btn--block">Envoyer le lien</button>
+        <button type="button" class="link-btn" id="backToLogin">Retour à la connexion</button>
+        <div class="form-feedback" id="forgotFeedback" role="status"></div>
+      </form>
+
+      <!-- Réinitialisation (si ?reset=TOKEN) -->
+      <form id="resetForm" autocomplete="off" hidden>
+        <p class="section-sub" style="font-size:.9rem">Choisis un nouveau mot de passe.</p>
+        <div class="field"><label>Nouveau mot de passe</label><input type="password" id="resetPass" required minlength="8"></div>
+        <div class="field"><label>Confirmer</label><input type="password" id="resetConfirm" required minlength="8"></div>
+        <button type="submit" class="btn btn--primary btn--block">Réinitialiser</button>
+        <div class="form-feedback" id="resetFeedback" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ WELCOME (après connexion) ============ -->
+  <div class="admin-welcome-overlay hide" id="welcomeOverlay"><h1>Welcome MisterPvris</h1></div>
+
+  <!-- ============ DASHBOARD (affiché si connecté) ============ -->
+  <div id="dashboardView" hidden>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <img src="assets/logo/logo-tophoops.png" alt="Logo Top Hoops">
+          <span>TOP<b>HOOPS</b> · ADMIN</span>
+        </a>
+        <div class="header-cta admin-topbar" style="margin:0">
+          <button class="btn btn--ghost btn--sm" id="btnChangePw">Modifier mot de passe</button>
+          <button class="btn btn--primary btn--sm" id="btnLogout">Déconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero admin-hero" style="padding:40px 0 10px">
+      <div class="container">
+        <div class="section-head reveal" style="margin-bottom:24px">
+          <img src="assets/logo/logo-tophoops.png" alt="Top Hoops" style="width:70px;height:70px;border-radius:50%;margin:0 auto 12px;box-shadow:0 0 26px var(--glow)">
+          <span class="eyebrow">Espace Admin</span>
+          <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3rem)">Espace Admin <span class="text-cyan">Top Hoops</span></h1>
+          <p class="section-sub">Gestion des inscriptions Summer League et Ligue Top Hoops.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:10px">
+      <div class="container">
+        <!-- KPI -->
+        <div class="kpi-grid" id="kpiGrid">
+          <div class="kpi-card"><div class="kpi-label">Total inscrits</div><div class="kpi-value" id="kpiTotal">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Summer League</div><div class="kpi-value" id="kpiSummer">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Ligue Top Hoops</div><div class="kpi-value" id="kpiLigue">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Dernière inscription</div><div class="kpi-value" id="kpiLatest" style="font-size:1.1rem">—</div></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="admin-toolbar">
+          <div class="filters" style="margin:0">
+            <button class="filter-btn active" data-evt="all">Tous</button>
+            <button class="filter-btn" data-evt="summerleague">Summer League</button>
+            <button class="filter-btn" data-evt="ligue_top_hoops">Ligue Top Hoops</button>
+          </div>
+          <div class="admin-search"><input type="search" id="searchInput" placeholder="Rechercher par nom, prénom, email, poste, niveau..."></div>
+        </div>
+
+        <div class="admin-topbar no-print" style="justify-content:flex-start;margin-bottom:14px">
+          <button class="btn btn--ghost btn--sm" id="btnExportPdf">Exporter PDF</button>
+          <button class="btn btn--ghost btn--sm" id="btnPrint">Imprimer la liste</button>
+          <button class="btn btn--ghost btn--sm" id="btnMailFiltered">Envoyer un mail au filtre affiché</button>
+        </div>
+
+        <h2 class="section-title" style="font-size:1.4rem;margin-bottom:14px">Liste des joueurs inscrits</h2>
+
+        <!-- Tableau -->
+        <div class="table-wrap">
+          <table class="admin-table" id="regTable">
+            <thead>
+              <tr>
+                <th>Nom</th><th>Prénom</th><th>Âge</th><th>Poste</th><th>Niveau</th>
+                <th>Événement</th><th>Email</th><th>Téléphone</th><th>Date</th><th class="no-print">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="regTbody"></tbody>
+          </table>
+          <div class="admin-empty" id="regEmpty" hidden>Aucune inscription pour ce filtre.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ MODALES ============ -->
+  <!-- Détail joueur -->
+  <div class="admin-modal" id="detailModal">
+    <div class="modal-panel">
+      <button class="modal-close" data-close>&times;</button>
+      <h3 style="text-transform:uppercase" id="detailTitle">Fiche joueur</h3>
+      <div class="detail-grid" id="detailBody"></div>
+      <div class="admin-topbar" style="margin-top:20px">
+        <button class="btn btn--ghost btn--sm" id="detailMailBtn">Envoyer un mail</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Envoi mail -->
+  <div class="admin-modal" id="mailModal">
+    <div class="modal-panel">
+      <button class="modal-close" data-close>&times;</button>
+      <h3 style="text-transform:uppercase">Envoyer un mail</h3>
+      <p class="section-sub" id="mailTarget" style="font-size:.9rem"></p>
+      <form id="mailForm">
+        <div class="field"><label>Sujet</label><input type="text" id="mailSubject" required></div>
+        <div class="field"><label>Message <span class="section-sub" style="font-size:.75rem">(utilise {prenom} pour personnaliser)</span></label><textarea id="mailBody" required style="min-height:140px"></textarea></div>
+        <button type="submit" class="btn btn--primary btn--block">Envoyer</button>
+        <div class="form-feedback" id="mailFeedback" role="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modifier mot de passe -->
+  <div class="admin-modal" id="pwModal">
+    <div class="modal-panel">
+      <button class="modal-close" data-close>&times;</button>
+      <h3 style="text-transform:uppercase">Modifier le mot de passe</h3>
+      <form id="pwForm">
+        <div class="field"><label>Mot de passe actuel</label><input type="password" id="pwCurrent" required></div>
+        <div class="field"><label>Nouveau mot de passe</label><input type="password" id="pwNew" required minlength="8"></div>
+        <div class="field"><label>Confirmer</label><input type="password" id="pwConfirm" required minlength="8"></div>
+        <button type="submit" class="btn btn--primary btn--block">Enregistrer</button>
+        <div class="form-feedback" id="pwFeedback" role="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1200,3 +1200,99 @@ body > section { position: relative; z-index: 1; }
 .soon-hourglass .icon-cyan { width: clamp(3rem, 9vw, 4.4rem); height: auto; }
 /* Le sablier animé : l'icône hérite de l'animation du conteneur */
 .soon-hourglass { display: inline-block; }
+
+/* =====================================================================
+   AJOUTS — ESPACE ADMIN TOP HOOPS
+   ===================================================================== */
+
+/* Écran de connexion admin */
+.admin-auth { min-height: calc(100vh - var(--header-h)); display: grid; place-items: center; padding: 40px 16px; }
+.admin-auth-card {
+  width: 100%; max-width: 420px; text-align: center;
+  border-radius: 22px; border: 1px solid var(--line-strong);
+  background: radial-gradient(80% 60% at 50% 0%, rgba(133,218,237,0.14), transparent 60%), linear-gradient(180deg, var(--bg-elev-2), #070A0E);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5); padding: 34px 28px;
+}
+.admin-auth-card img.brand-logo { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; box-shadow: 0 0 26px var(--glow); }
+.admin-auth-card h1 { text-transform: uppercase; font-size: 1.4rem; }
+.admin-auth-card .field { text-align: left; margin-bottom: 12px; }
+.admin-auth .link-btn { background: none; border: none; color: var(--cyan-main); cursor: pointer; font: inherit; font-size: .85rem; text-decoration: underline; margin-top: 14px; }
+.admin-auth .form-feedback { margin-top: 14px; }
+
+/* Overlay de bienvenue */
+.admin-welcome-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  background: #06080B; animation: adminWelcome 2.6s ease forwards;
+}
+.admin-welcome-overlay h1 {
+  font-size: clamp(2.4rem, 8vw, 7rem); color: var(--cyan-main);
+  text-transform: uppercase; text-align: center; letter-spacing: -0.02em;
+  text-shadow: 0 0 40px rgba(133,218,237,0.4);
+}
+@keyframes adminWelcome {
+  0% { opacity: 0; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; visibility: hidden; }
+}
+.admin-welcome-overlay.hide { display: none; }
+
+/* Barre d'actions admin */
+.admin-topbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-bottom: 20px; }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.kpi-card {
+  padding: 22px; border-radius: var(--radius); border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-elev), #080B10);
+}
+.kpi-card .kpi-label { font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); }
+.kpi-card .kpi-value { font-size: 2.4rem; font-weight: 800; color: var(--cyan-main); line-height: 1.1; }
+
+/* Filtres + recherche admin */
+.admin-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 26px 0 16px; }
+.admin-search { flex: 1; min-width: 220px; }
+.admin-search input { width: 100%; background: #070A0E; border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; color: var(--white); font-family: inherit; }
+
+/* Tableau des inscrits */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+.admin-table th, .admin-table td { padding: 12px 14px; text-align: left; font-size: .9rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.admin-table th { color: var(--text-muted); text-transform: uppercase; font-size: .72rem; letter-spacing: .08em; position: sticky; top: 0; background: #0B0F14; }
+.admin-table tr:hover td { background: rgba(133,218,237,0.04); }
+.admin-table .tag-event { font-size: .72rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--cyan-main); }
+.admin-table .row-actions { display: flex; gap: 6px; }
+.icon-btn { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--white); cursor: pointer; display: grid; place-items: center; }
+.icon-btn:hover { border-color: var(--cyan-main); color: var(--cyan-main); }
+.icon-btn.danger:hover { border-color: #E5484D; color: #E5484D; }
+.admin-empty { padding: 40px; text-align: center; color: var(--text-muted); }
+
+/* Modale admin (détail / mail / mot de passe) */
+.admin-modal { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; background: rgba(4,6,9,0.8); backdrop-filter: blur(6px); padding: 24px; }
+.admin-modal.open { display: flex; animation: fadeUp .25s ease; }
+.admin-modal .modal-panel {
+  width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+  border-radius: 20px; border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, var(--bg-elev-2), #070A0E);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.6); padding: 28px; position: relative;
+}
+.admin-modal .modal-close { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; background: rgba(11,15,20,0.8); border: 1px solid var(--line); color: var(--white); font-size: 1.2rem; cursor: pointer; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-top: 14px; }
+.detail-grid .d-item { display: flex; flex-direction: column; gap: 2px; }
+.detail-grid .d-item span { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+.detail-grid .d-item strong { font-weight: 600; }
+.detail-grid .d-item.full { grid-column: 1 / -1; }
+
+/* Impression / PDF */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  body::before, .logo-rail, .site-header, .admin-topbar, .admin-toolbar,
+  .admin-hero, .kpi-grid, .no-print, .row-actions, .site-footer { display: none !important; }
+  .table-wrap { border: none; overflow: visible; }
+  table.admin-table { min-width: 0; }
+  .admin-table th, .admin-table td { color: #000 !important; border-color: #999 !important; }
+  .admin-table th { background: #eee !important; }
+}
+
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+}

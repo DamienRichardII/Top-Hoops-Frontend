@@ -103,9 +103,9 @@
           <h2 class="section-title" style="font-size:1.5rem">Formulaire Summer League</h2>
         </div>
         <form class="form-wrap"
-              data-mailto="tophoops24@gmail.com"
-              data-subject="Inscription Summer League Top Hoops"
-              data-success="Merci ! Ton inscription Summer League est prête à être envoyée depuis ta messagerie.">
+              data-api="registrations"
+              data-event-type="summerleague"
+              data-success="Merci, ton inscription a bien été envoyée à Top Hoops.">
           <div class="form-grid">
             <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" name="prenom" data-label="Prénom" required></div>
             <div class="field"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
@@ -151,9 +151,9 @@
           <h2 class="section-title" style="font-size:1.5rem">Formulaire Ligue Top Hoops</h2>
         </div>
         <form class="form-wrap"
-              data-mailto="tophoops24@gmail.com"
-              data-subject="Inscription Ligue Top Hoops 1V1"
-              data-success="Merci ! Ton inscription Ligue Top Hoops est prête à être envoyée depuis ta messagerie.">
+              data-api="registrations"
+              data-event-type="ligue_top_hoops"
+              data-success="Merci, ton inscription a bien été envoyée à Top Hoops.">
           <div class="form-grid">
             <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" name="prenom" data-label="Prénom" required></div>
             <div class="field"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
@@ -252,6 +252,7 @@
     </div>
   </footer>
 
+  <script src="js/config.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
