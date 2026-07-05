@@ -1,7 +1,7 @@
 /* =====================================================================
    TOP HOOPS — Admin (login, dashboard, mails, PDF)
    Communique avec le backend via window.TOP_HOOPS_API_URL.
-   Le token JWT est stocké en localStorage et envoyé en Bearer.
+   Le token JWT est stocke en localStorage et envoye en Bearer.
    ===================================================================== */
 (function () {
   "use strict";
@@ -40,6 +40,36 @@
 
   var state = { all: [], filter: "all", search: "", currentId: null, mailMode: null };
 
+  // Icones SVG (contour)
+  var IC = {
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 4-.9"/><path d="M9.5 10.5a3 3 0 0 0 4 4"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>'
+  };
+
+  // Toggle "oeil" sur tous les champs mot de passe
+  function initPasswordToggles() {
+    document.querySelectorAll('input[type="password"]').forEach(function (inp) {
+      if (inp.parentElement && inp.parentElement.classList.contains("pw-wrap")) return;
+      var wrap = document.createElement("span");
+      wrap.className = "pw-wrap";
+      inp.parentNode.insertBefore(wrap, inp);
+      wrap.appendChild(inp);
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "pw-toggle";
+      btn.setAttribute("aria-label", "Afficher le mot de passe");
+      btn.innerHTML = IC.eye;
+      btn.addEventListener("click", function () {
+        var show = inp.type === "password";
+        inp.type = show ? "text" : "password";
+        btn.innerHTML = show ? IC.eyeOff : IC.eye;
+        btn.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe");
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
   /* ---------- VUES ---------- */
   function showLogin() { $("loginView").hidden = false; $("dashboardView").hidden = true; }
   function showDashboard(withWelcome) {
@@ -66,7 +96,7 @@
           feedback($("loginFeedback"), (r.data && r.data.error) || "Connexion impossible.", true);
         }
       })
-      .catch(function () { feedback($("loginFeedback"), "Serveur injoignable. Vérifie que le backend tourne.", true); });
+      .catch(function () { feedback($("loginFeedback"), "Serveur injoignable. Verifie que le backend tourne.", true); });
   });
 
   $("showForgot").addEventListener("click", function () { $("loginForm").hidden = true; $("forgotForm").hidden = false; });
@@ -75,7 +105,7 @@
   $("forgotForm").addEventListener("submit", function (e) {
     e.preventDefault();
     api("/api/auth/forgot-password", { method: "POST", body: { email: $("forgotEmail").value.trim() } })
-      .then(function (r) { feedback($("forgotFeedback"), (r.data && r.data.message) || "Si un compte existe, un e-mail a été envoyé.", false); });
+      .then(function (r) { feedback($("forgotFeedback"), (r.data && r.data.message) || "Si un compte existe, un e-mail a ete envoye.", false); });
   });
 
   $("resetForm").addEventListener("submit", function (e) {
@@ -84,8 +114,8 @@
     api("/api/auth/reset-password", { method: "POST", body: {
       token: token, newPassword: $("resetPass").value, confirmPassword: $("resetConfirm").value
     } }).then(function (r) {
-      if (r.ok) { feedback($("resetFeedback"), "Mot de passe réinitialisé. Tu peux te connecter.", false); setTimeout(function () { location.href = "admin.html"; }, 1500); }
-      else { feedback($("resetFeedback"), (r.data && r.data.error) || "Lien invalide ou expiré.", true); }
+      if (r.ok) { feedback($("resetFeedback"), "Mot de passe reinitialise. Tu peux te connecter.", false); setTimeout(function () { location.href = "admin.html"; }, 1500); }
+      else { feedback($("resetFeedback"), (r.data && r.data.error) || "Lien invalide ou expire.", true); }
     });
   });
 
@@ -101,7 +131,7 @@
       $("kpiSummer").textContent = r.data.summerleague;
       $("kpiLigue").textContent = r.data.ligue_top_hoops;
       var last = (r.data.latest && r.data.latest[0]);
-      $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "—";
+      $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "-";
     });
   }
 
@@ -139,15 +169,15 @@
         "<td>" + esc(r.phone || "") + "</td>" +
         "<td>" + fmtDate(r.created_at) + "</td>" +
         '<td class="no-print"><div class="row-actions">' +
-          '<button class="icon-btn" data-view="' + r.id + '" title="Voir détails">i</button>' +
-          '<button class="icon-btn" data-mail="' + r.id + '" title="Envoyer un mail">@</button>' +
-          '<button class="icon-btn danger" data-del="' + r.id + '" title="Supprimer">&times;</button>' +
+          '<button class="icon-btn" data-view="' + r.id + '" title="Voir details" aria-label="Voir details">' + IC.eye + "</button>" +
+          '<button class="icon-btn" data-mail="' + r.id + '" title="Envoyer un mail" aria-label="Envoyer un mail">' + IC.mail + "</button>" +
+          '<button class="icon-btn danger" data-del="' + r.id + '" title="Supprimer" aria-label="Supprimer">' + IC.trash + "</button>" +
         "</div></td>";
       tbody.appendChild(tr);
     });
   }
 
-  // Délégation d'événements sur le tableau
+  // Delegation d'evenements sur le tableau
   $("regTbody").addEventListener("click", function (e) {
     var b = e.target.closest("button");
     if (!b) return;
@@ -174,20 +204,20 @@
     searchTimer = setTimeout(function () { state.search = v; loadRegistrations(); }, 300);
   });
 
-  /* ---------- DÉTAIL ---------- */
+  /* ---------- DETAIL ---------- */
   function openDetail(id) {
     var r = state.all.find(function (x) { return x.id === id; });
     if (!r) return;
     state.currentId = id;
     $("detailTitle").textContent = r.first_name + " " + r.last_name;
     var rows = [
-      ["Nom", r.last_name], ["Prénom", r.first_name], ["Âge", r.age], ["Email", r.email],
-      ["Téléphone", r.phone], ["Ville", r.city], ["Poste", r.position], ["Taille", r.height],
-      ["Niveau", r.level], ["Instagram", r.instagram], ["Événement", EVENT_LABEL[r.event_type] || r.event_type],
-      ["Disponible le 9/07", r.available_for_event], ["Déjà participé", r.already_participated]
+      ["Nom", r.last_name], ["Prenom", r.first_name], ["Age", r.age], ["Email", r.email],
+      ["Telephone", r.phone], ["Ville", r.city], ["Poste", r.position], ["Taille", r.height],
+      ["Niveau", r.level], ["Instagram", r.instagram], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type],
+      ["Disponible le 9/07", r.available_for_event], ["Deja participe", r.already_participated]
     ];
     var html = rows.map(function (p) {
-      return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "—") + "</strong></div>";
+      return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
     }).join("");
     if (r.motivation) html += '<div class="d-item full"><span>Motivation</span><strong>' + esc(r.motivation) + "</strong></div>";
     if (r.message) html += '<div class="d-item full"><span>Message</span><strong>' + esc(r.message) + "</strong></div>";
@@ -199,7 +229,7 @@
 
   /* ---------- SUPPRESSION ---------- */
   function deleteReg(id) {
-    if (!confirm("Supprimer définitivement cette inscription ?")) return;
+    if (!confirm("Supprimer definitivement cette inscription ?")) return;
     api("/api/admin/registrations/" + id, { method: "DELETE" }).then(function (r) {
       if (r.ok) { loadStats(); loadRegistrations(); }
       else alert("Suppression impossible.");
@@ -215,7 +245,7 @@
   }
   $("btnMailFiltered").addEventListener("click", function () {
     var n = state.all.length;
-    if (!n) { alert("Aucun joueur dans le filtre affiché."); return; }
+    if (!n) { alert("Aucun joueur dans le filtre affiche."); return; }
     state.mailMode = { ids: state.all.map(function (r) { return r.id; }) };
     var label = state.filter === "all" ? "tous les joueurs" : EVENT_LABEL[state.filter];
     $("mailTarget").textContent = "Destinataires : " + label + " (" + n + " joueur(s))";
@@ -228,7 +258,7 @@
     api("/api/admin/send-email", { method: "POST", body: body }).then(function (r) {
       btn.disabled = false; btn.textContent = "Envoyer";
       if (r.ok) {
-        feedback($("mailFeedback"), "Envoyé à " + r.data.sent + "/" + r.data.total + " joueur(s).", false);
+        feedback($("mailFeedback"), "Envoye a " + r.data.sent + "/" + r.data.total + " joueur(s).", false);
         $("mailForm").reset();
         setTimeout(function () { closeModal("mailModal"); }, 1400);
       } else feedback($("mailFeedback"), (r.data && r.data.error) || "Envoi impossible.", true);
@@ -242,7 +272,7 @@
     api("/api/auth/change-password", { method: "POST", body: {
       currentPassword: $("pwCurrent").value, newPassword: $("pwNew").value, confirmPassword: $("pwConfirm").value
     } }).then(function (r) {
-      if (r.ok) { feedback($("pwFeedback"), "Mot de passe modifié.", false); $("pwForm").reset(); setTimeout(function () { closeModal("pwModal"); }, 1200); }
+      if (r.ok) { feedback($("pwFeedback"), "Mot de passe modifie.", false); $("pwForm").reset(); setTimeout(function () { closeModal("pwModal"); }, 1200); }
       else feedback($("pwFeedback"), (r.data && r.data.error) || "Modification impossible.", true);
     });
   });
@@ -260,15 +290,15 @@
   function filterLabel() { return state.filter === "all" ? "Tous" : EVENT_LABEL[state.filter]; }
 
   $("btnExportPdf").addEventListener("click", function () {
-    if (!window.jspdf) { alert("Librairie PDF non chargée."); return; }
+    if (!window.jspdf) { alert("Librairie PDF non chargee."); return; }
     var doc = new window.jspdf.jsPDF();
-    doc.setFontSize(16); doc.text("Top Hoops — Liste des joueurs inscrits", 14, 18);
+    doc.setFontSize(16); doc.text("Top Hoops - Liste des joueurs inscrits", 14, 18);
     doc.setFontSize(10); doc.setTextColor(90);
     doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 14, 25);
     doc.text("Filtre : " + filterLabel(), 14, 30);
     var rows = state.all.map(function (r) { return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || ""]; });
     doc.autoTable({
-      head: [["Nom", "Prénom", "Poste", "Niveau", "Âge"]],
+      head: [["Nom", "Prenom", "Poste", "Niveau", "Age"]],
       body: rows, startY: 36, styles: { fontSize: 9 },
       headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
     });
@@ -279,6 +309,7 @@
 
   /* ---------- INIT ---------- */
   (function init() {
+    initPasswordToggles();
     var resetToken = new URLSearchParams(location.search).get("reset");
     if (resetToken) { showLogin(); $("loginForm").hidden = true; $("resetForm").hidden = false; return; }
     if (getToken()) {

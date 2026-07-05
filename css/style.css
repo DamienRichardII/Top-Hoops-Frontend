@@ -1296,3 +1296,17 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .detail-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- Admin : toggle oeil mot de passe ---------- */
+.pw-wrap { position: relative; display: block; }
+.pw-wrap input { padding-right: 46px; width: 100%; }
+.pw-toggle {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; border: none; background: transparent;
+  color: var(--text-muted); cursor: pointer; display: grid; place-items: center; border-radius: 8px;
+}
+.pw-toggle:hover { color: var(--cyan-main); }
+.pw-toggle svg { width: 20px; height: 20px; }
+
+/* ---------- Admin : icones d'action du tableau ---------- */
+.row-actions .icon-btn svg { width: 17px; height: 17px; }
