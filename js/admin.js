@@ -164,6 +164,7 @@
         "<td>" + esc(r.age || "") + "</td>" +
         "<td>" + esc(r.position || "") + "</td>" +
         "<td>" + esc(r.level || "") + "</td>" +
+        "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
         "<td>" + esc(r.email) + "</td>" +
         "<td>" + esc(r.phone || "") + "</td>" +
@@ -213,7 +214,7 @@
     var rows = [
       ["Nom", r.last_name], ["Prenom", r.first_name], ["Age", r.age], ["Email", r.email],
       ["Telephone", r.phone], ["Ville", r.city], ["Poste", r.position], ["Taille", r.height],
-      ["Niveau", r.level], ["Instagram", r.instagram], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type],
+      ["Niveau", r.level], ["Instagram", r.instagram], ["Frais 20\u20ac acceptes", r.registration_fee_accepted], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type],
       ["Disponible le 9/07", r.available_for_event], ["Deja participe", r.already_participated]
     ];
     var html = rows.map(function (p) {
@@ -296,9 +297,9 @@
     doc.setFontSize(10); doc.setTextColor(90);
     doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 14, 25);
     doc.text("Filtre : " + filterLabel(), 14, 30);
-    var rows = state.all.map(function (r) { return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || ""]; });
+    var rows = state.all.map(function (r) { return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "", r.registration_fee_accepted || "-"]; });
     doc.autoTable({
-      head: [["Nom", "Prenom", "Poste", "Niveau", "Age"]],
+      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac"]],
       body: rows, startY: 36, styles: { fontSize: 9 },
       headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
     });

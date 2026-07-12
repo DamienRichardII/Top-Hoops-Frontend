@@ -369,6 +369,7 @@
       var payload = { event_type: eventType };
       form.querySelectorAll("input, select, textarea").forEach(function (el) {
         if (!el.name) return;
+        if (el.type === "radio" && !el.checked) return;   // ne garder que le radio coché
         var key = FIELD_MAP[el.name] || el.name;
         payload[key] = (el.type === "checkbox") ? el.checked : el.value.trim();
       });

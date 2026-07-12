@@ -1310,3 +1310,27 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 
 /* ---------- Admin : icones d'action du tableau ---------- */
 .row-actions .icon-btn svg { width: 17px; height: 17px; }
+
+/* ---------- Inscription : rappel evenement + frais 20€ (radios) ---------- */
+.reg-recap {
+  margin: 0 0 22px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: radial-gradient(80% 120% at 0% 0%, rgba(133,218,237,0.10), transparent 60%), linear-gradient(180deg, var(--bg-elev-2), #070A0E);
+}
+.reg-recap h3 { margin: 0 0 8px; font-size: 1rem; text-transform: uppercase; color: var(--cyan-main); }
+.reg-recap ul { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.reg-recap li { position: relative; padding-left: 18px; color: var(--text-muted); font-size: .92rem; }
+.reg-recap li::before { content: "▹"; position: absolute; left: 0; color: var(--cyan-main); }
+
+.radio-choice-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.radio-choice {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 46px; padding: 12px 18px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(255,255,255,0.03);
+  color: var(--white); font-weight: 700; cursor: pointer;
+  transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+.radio-choice input { accent-color: var(--cyan-main); width: 18px; height: 18px; }
+.radio-choice:has(input:checked) { border-color: var(--line-strong); background: rgba(133,218,237,0.12); color: var(--cyan-main); }
