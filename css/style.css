@@ -1371,3 +1371,35 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   background: #06080B; margin: 18px 0;
 }
 .matchup-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+
+/* ---------- Ligue : carte match-up AVEC replay integre ---------- */
+.matchup-with-replay {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) 1fr;
+  gap: 36px;
+  align-items: start;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(133, 218, 237, 0.24);
+  background: linear-gradient(135deg, rgba(13,24,31,0.96), rgba(6,8,11,0.98));
+}
+.matchup-with-replay .matchup-poster img {
+  width: 100%; height: auto; display: block;
+  border-radius: 22px; object-fit: cover;
+  border: 1px solid rgba(133,218,237,0.22);
+}
+.matchup-with-replay .matchup-content { display: flex; flex-direction: column; align-items: flex-start; }
+.matchup-with-replay .matchup-content h3 { font-size: clamp(1.6rem, 4vw, 2.2rem); text-transform: uppercase; margin: 8px 0; }
+.matchup-with-replay .matchup-content > p { color: var(--text-muted); }
+.matchup-replay-inline {
+  width: 100%; margin-top: 26px; padding-top: 24px;
+  border-top: 1px solid rgba(133, 218, 237, 0.16);
+}
+.matchup-replay-heading h4 { margin: 8px 0; color: var(--white); font-size: clamp(1.2rem, 2vw, 1.6rem); text-transform: uppercase; }
+.matchup-replay-heading p { color: rgba(250,250,250,0.72); margin: 0; }
+
+@media (max-width: 900px) {
+  .matchup-with-replay { grid-template-columns: 1fr; gap: 24px; padding: 20px; }
+  .matchup-replay-inline { margin-top: 22px; padding-top: 20px; }
+  .matchup-video-frame { border-radius: 16px; }
+}
