@@ -213,15 +213,12 @@
     $("detailTitle").textContent = r.first_name + " " + r.last_name;
     var rows = [
       ["Nom", r.last_name], ["Prenom", r.first_name], ["Age", r.age], ["Email", r.email],
-      ["Telephone", r.phone], ["Ville", r.city], ["Poste", r.position], ["Taille", r.height],
-      ["Niveau", r.level], ["Instagram", r.instagram], ["Frais 20\u20ac acceptes", r.registration_fee_accepted], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type],
-      ["Disponible le 9/07", r.available_for_event], ["Deja participe", r.already_participated]
+      ["Telephone", r.phone], ["Poste", r.position], ["Taille", r.height],
+      ["Niveau", r.level], ["Instagram", r.instagram], ["Frais 20\u20ac acceptes", r.registration_fee_accepted], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type]
     ];
     var html = rows.map(function (p) {
       return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
     }).join("");
-    if (r.motivation) html += '<div class="d-item full"><span>Motivation</span><strong>' + esc(r.motivation) + "</strong></div>";
-    if (r.message) html += '<div class="d-item full"><span>Message</span><strong>' + esc(r.message) + "</strong></div>";
     html += '<div class="d-item full"><span>Date d\'inscription</span><strong>' + fmtDate(r.created_at) + "</strong></div>";
     $("detailBody").innerHTML = html;
     openModal("detailModal");
