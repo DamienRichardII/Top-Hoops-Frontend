@@ -352,6 +352,7 @@
   var FIELD_MAP = {
     prenom: "first_name", nom: "last_name", age: "age", email: "email",
     telephone: "phone", ville: "city", poste: "position", taille: "height",
+    taille_maillot: "jersey_size", taille_short: "short_size",
     niveau: "level", instagram: "instagram", message: "message",
     dispo: "available_for_event", deja_participe: "already_participated",
     motivation: "motivation", consentement: "consent"

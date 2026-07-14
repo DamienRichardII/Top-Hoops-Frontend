@@ -214,6 +214,7 @@
     var rows = [
       ["Nom", r.last_name], ["Prenom", r.first_name], ["Age", r.age], ["Email", r.email],
       ["Telephone", r.phone], ["Poste", r.position], ["Taille", r.height],
+      ["Taille maillot", r.jersey_size], ["Taille short", r.short_size],
       ["Niveau", r.level], ["Instagram", r.instagram], ["Frais 20\u20ac acceptes", r.registration_fee_accepted], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type]
     ];
     var html = rows.map(function (p) {
