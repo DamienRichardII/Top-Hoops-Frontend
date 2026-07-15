@@ -2,8 +2,11 @@ User-agent: *
 Allow: /
 
 Disallow: /admin.html
-Disallow: /assets/
 Disallow: /js/
 Disallow: /css/
+
+Allow: /assets/
+Allow: /assets/logo/
+Allow: /assets/images/
 
 Sitemap: https://tophoops.fr/sitemap.xml
