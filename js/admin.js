@@ -46,8 +46,18 @@
     eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 4-.9"/><path d="M9.5 10.5a3 3 0 0 0 4 4"/></svg>',
     mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>',
     trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>',
-    resend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/></svg>'
+    resend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/></svg>',
+    reject: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
   };
+
+  // Bouton mail contextuel : "Envoyer" si pas encore confirmé, sinon état "confirmé" + renvoi possible
+  function mailButton(r) {
+    if (r.mail_sent) {
+      return '<button class="icon-btn ok" data-mailconfirmed="1" data-remail="' + r.id + '" title="Déjà confirmé — renvoyer le mail" aria-label="Déjà confirmé, renvoyer le mail">' + IC.check + "</button>";
+    }
+    return '<button class="icon-btn" data-mail="' + r.id + '" title="Envoyer le mail de confirmation" aria-label="Envoyer le mail de confirmation">' + IC.mail + "</button>";
+  }
 
   // Toggle "oeil" sur tous les champs mot de passe
   function initPasswordToggles() {
@@ -132,6 +142,9 @@
       $("kpiTotal").textContent = r.data.total;
       $("kpiSummer").textContent = r.data.summerleague;
       $("kpiLigue").textContent = r.data.ligue_top_hoops;
+      if ($("kpiPending")) $("kpiPending").textContent = r.data.pending != null ? r.data.pending : "-";
+      if ($("kpiConfirmed")) $("kpiConfirmed").textContent = r.data.confirmed != null ? r.data.confirmed : "-";
+      if ($("kpiRejected")) $("kpiRejected").textContent = r.data.rejected != null ? r.data.rejected : "-";
       var last = (r.data.latest && r.data.latest[0]);
       $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "-";
     });
@@ -142,13 +155,36 @@
 
   function loadRegistrations() {
     var q = "?";
-    if (state.filter !== "all") q += "event=" + state.filter + "&";
+    var f = state.filter;
+    if (f && f !== "all") {
+      if (f.indexOf("status:") === 0) q += "status=" + f.slice(7) + "&";
+      else if (f.indexOf("event:") === 0) q += "event=" + f.slice(6) + "&";
+      else q += "event=" + f + "&"; // rétrocompat
+    }
     if (state.search) q += "search=" + encodeURIComponent(state.search);
     api("/api/admin/registrations" + q).then(function (r) {
       if (r.status === 401) { setToken(null); showLogin(); return; }
       state.all = (r.data && r.data.registrations) || [];
       renderTable();
     });
+  }
+
+  // Badge de statut d'un joueur (pending / confirmed / rejected)
+  var REG_STATUS = {
+    confirmed: { cls: "ok", label: "Confirmé" },
+    rejected: { cls: "danger", label: "Refusé" },
+    pending: { cls: "warn", label: "En attente" }
+  };
+  function regStatusBadge(status) {
+    var s = REG_STATUS[status] || REG_STATUS.pending;
+    return '<span class="status-badge ' + s.cls + '">' + s.label + "</span>";
+  }
+  function mailCell(r) {
+    if (r.mail_sent) {
+      var d = r.mail_sent_at ? fmtDateTime(r.mail_sent_at) : "";
+      return '<span class="status-badge ok">Envoyé</span>' + (d ? '<span class="mail-when">' + esc(d) + "</span>" : "");
+    }
+    return '<span class="status-badge muted">Non envoyé</span>';
   }
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]); }); }
@@ -168,12 +204,17 @@
         "<td>" + esc(r.level || "") + "</td>" +
         "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
+        "<td>" + regStatusBadge(r.status) + "</td>" +
+        '<td class="mail-col">' + mailCell(r) + "</td>" +
         "<td>" + esc(r.email) + "</td>" +
         "<td>" + esc(r.phone || "") + "</td>" +
         "<td>" + fmtDate(r.created_at) + "</td>" +
         '<td class="no-print"><div class="row-actions">' +
           '<button class="icon-btn" data-view="' + r.id + '" title="Voir details" aria-label="Voir details">' + IC.eye + "</button>" +
-          '<button class="icon-btn" data-mail="' + r.id + '" title="Envoyer un mail" aria-label="Envoyer un mail">' + IC.mail + "</button>" +
+          mailButton(r) +
+          (r.status !== "rejected"
+            ? '<button class="icon-btn danger" data-reject="' + r.id + '" title="Refuser le joueur" aria-label="Refuser le joueur">' + IC.reject + "</button>"
+            : "") +
           '<button class="icon-btn danger" data-del="' + r.id + '" title="Supprimer" aria-label="Supprimer">' + IC.trash + "</button>" +
         "</div></td>";
       tbody.appendChild(tr);
@@ -186,15 +227,30 @@
     if (!b) return;
     if (b.dataset.view) openDetail(b.dataset.view);
     else if (b.dataset.mail) openMailSingle(b.dataset.mail);
+    else if (b.dataset.remail) {
+      if (confirm("Ce joueur a déjà été confirmé. Renvoyer un mail ?")) openMailSingle(b.dataset.remail);
+    }
+    else if (b.dataset.reject) rejectReg(b.dataset.reject);
     else if (b.dataset.del) deleteReg(b.dataset.del);
   });
 
-  // Filtres
-  document.querySelectorAll(".filter-btn").forEach(function (btn) {
+  // Refuser un joueur (aucun mail envoyé)
+  function rejectReg(id) {
+    var r = state.all.find(function (x) { return x.id === id; });
+    var who = r ? (r.first_name + " " + r.last_name) : "ce joueur";
+    if (!confirm("Refuser " + who + " ? (aucun mail ne sera envoyé)")) return;
+    api("/api/admin/registrations/" + id + "/status", { method: "PATCH", body: { status: "rejected" } }).then(function (res) {
+      if (res.ok) { loadStats(); loadRegistrations(); }
+      else alert("Impossible de refuser ce joueur.");
+    });
+  }
+
+  // Filtres inscriptions (statut + événement)
+  document.querySelectorAll(".filter-btn[data-filter]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".filter-btn").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".filter-btn[data-filter]").forEach(function (b) { b.classList.remove("active"); });
       btn.classList.add("active");
-      state.filter = btn.getAttribute("data-evt");
+      state.filter = btn.getAttribute("data-filter");
       loadRegistrations();
     });
   });
@@ -222,6 +278,8 @@
     var html = rows.map(function (p) {
       return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
     }).join("");
+    html += '<div class="d-item"><span>Statut</span><strong>' + regStatusBadge(r.status) + "</strong></div>";
+    html += '<div class="d-item"><span>Mail de confirmation</span><strong>' + mailCell(r) + "</strong></div>";
     html += '<div class="d-item full"><span>Date d\'inscription</span><strong>' + fmtDate(r.created_at) + "</strong></div>";
     $("detailBody").innerHTML = html;
     openModal("detailModal");
@@ -259,8 +317,11 @@
     api("/api/admin/send-email", { method: "POST", body: body }).then(function (r) {
       btn.disabled = false; btn.textContent = "Envoyer";
       if (r.ok) {
-        feedback($("mailFeedback"), "Envoye a " + r.data.sent + "/" + r.data.total + " joueur(s).", false);
+        feedback($("mailFeedback"), "Envoye a " + r.data.sent + "/" + r.data.total + " joueur(s). Statut : Confirme.", false);
         $("mailForm").reset();
+        loadStats();
+        loadRegistrations();
+        loadSentEmails();
         setTimeout(function () { closeModal("mailModal"); }, 1400);
       } else feedback($("mailFeedback"), (r.data && r.data.error) || "Envoi impossible.", true);
     });
@@ -297,10 +358,15 @@
     doc.setFontSize(10); doc.setTextColor(90);
     doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 14, 25);
     doc.text("Filtre : " + filterLabel(), 14, 30);
-    var rows = state.all.map(function (r) { return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "", r.registration_fee_accepted || "-"]; });
+    var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
+    var rows = state.all.map(function (r) {
+      var mail = r.mail_sent ? ("Oui" + (r.mail_sent_at ? " (" + fmtDate(r.mail_sent_at) + ")" : "")) : "Non";
+      return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "",
+              r.registration_fee_accepted || "-", STATUS_FR[r.status] || "En attente", mail];
+    });
     doc.autoTable({
-      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac"]],
-      body: rows, startY: 36, styles: { fontSize: 9 },
+      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac", "Statut", "Mail envoye"]],
+      body: rows, startY: 36, styles: { fontSize: 8 },
       headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
     });
     doc.save("top-hoops-inscrits-" + state.filter + ".pdf");
@@ -360,14 +426,14 @@
     tbody.innerHTML = "";
     $("mailEmpty").hidden = mailState.all.length > 0;
     mailState.all.forEach(function (m) {
-      var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim() || "—";
+      var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim() || m.recipient_email || "—";
       var tr = document.createElement("tr");
       tr.innerHTML =
-        "<td>" + fmtDate(m.created_at) + "</td>" +
         "<td>" + esc(name) + "</td>" +
-        "<td>" + esc(m.recipient_email) + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[m.event_type] || "—") + "</span></td>" +
-        "<td>" + esc(MAIL_TYPE_LABEL[m.email_type] || m.email_type || "—") + "</td>" +
+        "<td>" + fmtDate(m.created_at) + "</td>" +
+        "<td>" + esc(fmtTime(m.created_at)) + "</td>" +
+        "<td>" + esc(m.sent_by || "—") + "</td>" +
         "<td>" + esc(m.subject || "") + "</td>" +
         "<td>" + statusBadge(m.status) + "</td>" +
         '<td class="no-print"><div class="row-actions">' +
@@ -452,18 +518,19 @@
   }
 
   function fmtDateTime(d) { try { return new Date(d).toLocaleString("fr-FR"); } catch (e) { return d; } }
+  function fmtTime(d) { try { return new Date(d).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } }
 
   // Export CSV de l'historique des mails
   $("btnExportMailsCsv").addEventListener("click", function () {
     if (!mailState.all.length) { alert("Aucun mail à exporter."); return; }
-    var cols = ["Date", "Destinataire", "Email", "Événement", "Type", "Sujet", "Statut"];
+    var cols = ["Joueur", "Email", "Événement", "Date", "Heure", "Envoyé par", "Sujet", "Statut"];
     function csvCell(v) { v = String(v == null ? "" : v).replace(/"/g, '""'); return '"' + v + '"'; }
     var lines = [cols.map(csvCell).join(",")];
     mailState.all.forEach(function (m) {
       var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim();
       lines.push([
-        fmtDateTime(m.created_at), name, m.recipient_email,
-        EVENT_LABEL[m.event_type] || "", MAIL_TYPE_LABEL[m.email_type] || m.email_type || "",
+        name, m.recipient_email, EVENT_LABEL[m.event_type] || "",
+        fmtDate(m.created_at), fmtTime(m.created_at), m.sent_by || "",
         m.subject || "", m.status || ""
       ].map(csvCell).join(","));
     });

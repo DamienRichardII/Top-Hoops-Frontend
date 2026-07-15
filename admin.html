@@ -106,17 +106,23 @@
           <div class="kpi-card"><div class="kpi-label">Total inscrits</div><div class="kpi-value" id="kpiTotal">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Summer League</div><div class="kpi-value" id="kpiSummer">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Ligue Top Hoops</div><div class="kpi-value" id="kpiLigue">—</div></div>
+          <div class="kpi-card kpi-pending"><div class="kpi-label">En attente</div><div class="kpi-value" id="kpiPending">—</div></div>
+          <div class="kpi-card kpi-confirmed"><div class="kpi-label">Confirmés</div><div class="kpi-value" id="kpiConfirmed">—</div></div>
+          <div class="kpi-card kpi-rejected"><div class="kpi-label">Refusés</div><div class="kpi-value" id="kpiRejected">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Dernière inscription</div><div class="kpi-value" id="kpiLatest" style="font-size:1.1rem">—</div></div>
         </div>
 
         <!-- Toolbar -->
         <div class="admin-toolbar">
           <div class="filters" style="margin:0">
-            <button class="filter-btn active" data-evt="all">Tous</button>
-            <button class="filter-btn" data-evt="summerleague">Summer League</button>
-            <button class="filter-btn" data-evt="ligue_top_hoops">Ligue Top Hoops</button>
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="status:pending">En attente</button>
+            <button class="filter-btn" data-filter="status:confirmed">Confirmés</button>
+            <button class="filter-btn" data-filter="status:rejected">Refusés</button>
+            <button class="filter-btn" data-filter="event:summerleague">Summer League</button>
+            <button class="filter-btn" data-filter="event:ligue_top_hoops">Ligue Top Hoops</button>
           </div>
-          <div class="admin-search"><input type="search" id="searchInput" placeholder="Rechercher par nom, prénom, email, poste, niveau..."></div>
+          <div class="admin-search"><input type="search" id="searchInput" placeholder="Rechercher par nom, prénom, email..."></div>
         </div>
 
         <div class="admin-topbar no-print" style="justify-content:flex-start;margin-bottom:14px">
@@ -133,7 +139,7 @@
             <thead>
               <tr>
                 <th>Nom</th><th>Prénom</th><th>Âge</th><th>Poste</th><th>Niveau</th>
-                <th>Frais 20€</th><th>Événement</th><th>Email</th><th>Téléphone</th><th>Date</th><th class="no-print">Actions</th>
+                <th>Frais 20€</th><th>Événement</th><th>Statut</th><th>Mail envoyé</th><th>Email</th><th>Téléphone</th><th>Date</th><th class="no-print">Actions</th>
               </tr>
             </thead>
             <tbody id="regTbody"></tbody>
@@ -149,7 +155,7 @@
         <div class="section-head reveal" style="margin-bottom:18px">
           <span class="eyebrow">Suivi des envois</span>
           <h2 class="section-title" style="font-size:1.5rem">Historique des mails envoyés</h2>
-          <p class="section-sub">Chaque mail envoyé (confirmations joueurs, notifications, mails manuels) est tracé ici.</p>
+          <p class="section-sub">Uniquement les mails de confirmation envoyés manuellement par le chef de projet. Les anciens mails automatiques ne sont plus comptabilisés ici.</p>
         </div>
 
         <!-- KPI mails -->
@@ -164,9 +170,7 @@
         <div class="admin-toolbar">
           <div class="filters" style="margin:0">
             <button class="filter-btn active mail-filter" data-mailfilter="all">Tous</button>
-            <button class="filter-btn mail-filter" data-mailfilter="type:admin_custom">Mails admin</button>
-            <button class="filter-btn mail-filter" data-mailfilter="type:player_confirmation">Confirmations joueurs</button>
-            <button class="filter-btn mail-filter" data-mailfilter="type:admin_notification">Notifications chef de projet</button>
+            <button class="filter-btn mail-filter" data-mailfilter="status:sent">Envoyés</button>
             <button class="filter-btn mail-filter" data-mailfilter="status:failed">Échecs</button>
             <button class="filter-btn mail-filter" data-mailfilter="event:summerleague">Summer League</button>
             <button class="filter-btn mail-filter" data-mailfilter="event:ligue_top_hoops">Ligue Top Hoops</button>
@@ -182,8 +186,8 @@
           <table class="admin-table" id="mailTable">
             <thead>
               <tr>
-                <th>Date</th><th>Destinataire</th><th>Email</th><th>Événement</th>
-                <th>Type</th><th>Sujet</th><th>Statut</th><th class="no-print">Actions</th>
+                <th>Joueur</th><th>Événement</th><th>Date</th><th>Heure</th>
+                <th>Envoyé par</th><th>Sujet</th><th>Statut</th><th class="no-print">Actions</th>
               </tr>
             </thead>
             <tbody id="mailTbody"></tbody>

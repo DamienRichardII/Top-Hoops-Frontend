@@ -1413,3 +1413,13 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .mail-detail-message{margin-top:18px}
 .mail-detail-label{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:#85DAED;margin-bottom:7px;font-weight:700}
 .mail-detail-message pre{white-space:pre-wrap;word-break:break-word;background:#06080B;border:1px solid rgba(133,218,237,.18);border-radius:12px;padding:15px 16px;max-height:300px;overflow:auto;font-family:inherit;font-size:.9rem;line-height:1.55;color:#D7E1E7;margin:0}
+
+/* ===== Workflow validation inscriptions (admin CRM) ===== */
+.status-badge.muted{background:rgba(154,169,181,.12);color:#9AA9B5;border:1px solid rgba(154,169,181,.3)}
+.mail-col{white-space:nowrap}
+.mail-when{display:block;font-size:.72rem;color:#9AA9B5;margin-top:3px}
+.icon-btn.ok{color:#63e6a0;border-color:rgba(46,204,113,.4)}
+.icon-btn.ok:hover{background:rgba(46,204,113,.14)}
+.kpi-card.kpi-pending .kpi-value{color:#f2d27a}
+.kpi-card.kpi-confirmed .kpi-value{color:#63e6a0}
+.kpi-card.kpi-rejected .kpi-value{color:#ff8f8f}
