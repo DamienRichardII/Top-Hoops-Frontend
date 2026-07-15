@@ -1403,3 +1403,13 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .matchup-replay-inline { margin-top: 22px; padding-top: 20px; }
   .matchup-video-frame { border-radius: 16px; }
 }
+
+/* ===== Historique des mails envoyés (admin) ===== */
+.status-badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.status-badge.ok{background:rgba(46,204,113,.14);color:#63e6a0;border:1px solid rgba(46,204,113,.35)}
+.status-badge.danger{background:rgba(255,90,90,.14);color:#ff8f8f;border:1px solid rgba(255,90,90,.4)}
+.status-badge.warn{background:rgba(240,200,90,.14);color:#f2d27a;border:1px solid rgba(240,200,90,.35)}
+.text-danger{color:#ff8f8f}
+.mail-detail-message{margin-top:18px}
+.mail-detail-label{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:#85DAED;margin-bottom:7px;font-weight:700}
+.mail-detail-message pre{white-space:pre-wrap;word-break:break-word;background:#06080B;border:1px solid rgba(133,218,237,.18);border-radius:12px;padding:15px 16px;max-height:300px;overflow:auto;font-family:inherit;font-size:.9rem;line-height:1.55;color:#D7E1E7;margin:0}

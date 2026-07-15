@@ -45,7 +45,8 @@
     eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
     eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 4-.9"/><path d="M9.5 10.5a3 3 0 0 0 4 4"/></svg>',
     mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>',
-    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>'
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/></svg>',
+    resend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v5h-5"/></svg>'
   };
 
   // Toggle "oeil" sur tous les champs mot de passe
@@ -82,6 +83,7 @@
     $("dashboardView").hidden = false;
     loadStats();
     loadRegistrations();
+    loadSentEmails();
   }
 
   /* ---------- AUTH ---------- */
@@ -305,6 +307,173 @@
   });
 
   $("btnPrint").addEventListener("click", function () { window.print(); });
+
+  /* ---------- HISTORIQUE DES MAILS ENVOYÉS ---------- */
+  var mailState = { all: [], filter: "all", search: "", currentId: null };
+  var MAIL_TYPE_LABEL = {
+    admin_custom: "Mail admin",
+    player_confirmation: "Confirmation joueur",
+    admin_notification: "Notification chef de projet",
+    password_reset: "Mot de passe",
+    other: "Autre"
+  };
+
+  function loadSentEmails() {
+    var q = "?";
+    var f = mailState.filter;
+    if (f !== "all") {
+      if (f.indexOf("type:") === 0) q += "email_type=" + f.slice(5) + "&";
+      else if (f.indexOf("status:") === 0) q += "status=" + f.slice(7) + "&";
+      else if (f.indexOf("event:") === 0) q += "event_type=" + f.slice(6) + "&";
+    }
+    if (mailState.search) q += "search=" + encodeURIComponent(mailState.search);
+    api("/api/admin/sent-emails" + q).then(function (r) {
+      if (r.status === 401) { setToken(null); showLogin(); return; }
+      mailState.all = (r.data && r.data.emails) || [];
+      renderMailStats(r.data && r.data.stats);
+      renderMailTable();
+    });
+  }
+
+  function renderMailStats(stats) {
+    stats = stats || {};
+    $("mailKpiSent").textContent = stats.sent != null ? stats.sent : "-";
+    $("mailKpiFailed").textContent = stats.failed != null ? stats.failed : "-";
+    $("mailKpiTotal").textContent = stats.total != null ? stats.total : "-";
+    var last = stats.latest;
+    if (last) {
+      var who = (last.recipient_first_name || last.recipient_last_name)
+        ? ((last.recipient_first_name || "") + " " + (last.recipient_last_name || "")).trim()
+        : last.recipient_email;
+      $("mailKpiLatest").textContent = who + " — " + fmtDate(last.created_at);
+    } else { $("mailKpiLatest").textContent = "-"; }
+  }
+
+  function statusBadge(s) {
+    var cls = s === "failed" ? "danger" : (s === "pending" ? "warn" : "ok");
+    var label = s === "failed" ? "Échec" : (s === "pending" ? "En attente" : "Envoyé");
+    return '<span class="status-badge ' + cls + '">' + label + "</span>";
+  }
+
+  function renderMailTable() {
+    var tbody = $("mailTbody");
+    tbody.innerHTML = "";
+    $("mailEmpty").hidden = mailState.all.length > 0;
+    mailState.all.forEach(function (m) {
+      var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim() || "—";
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + fmtDate(m.created_at) + "</td>" +
+        "<td>" + esc(name) + "</td>" +
+        "<td>" + esc(m.recipient_email) + "</td>" +
+        '<td><span class="tag-event">' + esc(EVENT_LABEL[m.event_type] || "—") + "</span></td>" +
+        "<td>" + esc(MAIL_TYPE_LABEL[m.email_type] || m.email_type || "—") + "</td>" +
+        "<td>" + esc(m.subject || "") + "</td>" +
+        "<td>" + statusBadge(m.status) + "</td>" +
+        '<td class="no-print"><div class="row-actions">' +
+          '<button class="icon-btn" data-mailview="' + m.id + '" title="Voir le détail" aria-label="Voir le détail">' + IC.eye + "</button>" +
+          '<button class="icon-btn" data-mailresend="' + m.id + '" title="Renvoyer" aria-label="Renvoyer">' + IC.resend + "</button>" +
+        "</div></td>";
+      tbody.appendChild(tr);
+    });
+  }
+
+  $("mailTbody").addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.mailview) openSentEmailDetail(b.dataset.mailview);
+    else if (b.dataset.mailresend) resendEmail(b.dataset.mailresend);
+  });
+
+  document.querySelectorAll(".mail-filter").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".mail-filter").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      mailState.filter = btn.getAttribute("data-mailfilter");
+      loadSentEmails();
+    });
+  });
+
+  var mailSearchTimer;
+  $("mailSearchInput").addEventListener("input", function () {
+    clearTimeout(mailSearchTimer);
+    var v = this.value;
+    mailSearchTimer = setTimeout(function () { mailState.search = v; loadSentEmails(); }, 300);
+  });
+
+  function openSentEmailDetail(id) {
+    mailState.currentId = id;
+    api("/api/admin/sent-emails/" + id).then(function (r) {
+      if (!r.ok || !r.data.email) { alert("Mail introuvable."); return; }
+      var m = r.data.email;
+      var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim() || "—";
+      $("mailDetailTitle").textContent = "Mail à " + name;
+      var rows = [
+        ["Destinataire", name],
+        ["Email", m.recipient_email],
+        ["Événement", EVENT_LABEL[m.event_type] || "—"],
+        ["Type de mail", MAIL_TYPE_LABEL[m.email_type] || m.email_type || "—"],
+        ["Sujet", m.subject],
+        ["Envoyé par", m.sent_by || "—"],
+        ["ID Resend", m.resend_email_id || "—"]
+      ];
+      var html = rows.map(function (p) {
+        return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
+      }).join("");
+      html += '<div class="d-item"><span>Statut</span><strong>' + statusBadge(m.status) + "</strong></div>";
+      html += '<div class="d-item full"><span>Date d\'envoi</span><strong>' + fmtDateTime(m.created_at) + "</strong></div>";
+      if (m.status === "failed" && m.error_message) {
+        html += '<div class="d-item full"><span>Erreur</span><strong class="text-danger">' + esc(m.error_message) + "</strong></div>";
+      }
+      $("mailDetailBody").innerHTML = html;
+      $("mailDetailMessage").textContent = m.body || "";
+      feedback($("mailDetailFeedback"), "", false);
+      $("mailDetailFeedback").classList.remove("show");
+      openModal("mailDetailModal");
+    });
+  }
+
+  $("mailResendBtn").addEventListener("click", function () {
+    if (mailState.currentId) resendEmail(mailState.currentId, $("mailDetailFeedback"));
+  });
+
+  function resendEmail(id, fbEl) {
+    if (!confirm("Renvoyer ce mail au destinataire ?")) return;
+    api("/api/admin/sent-emails/" + id + "/resend", { method: "POST" }).then(function (r) {
+      if (r.ok) {
+        if (fbEl) feedback(fbEl, "Mail renvoyé.", false);
+        loadSentEmails();
+        if (!fbEl) alert("Mail renvoyé.");
+      } else {
+        var msg = (r.data && r.data.error) || "Renvoi impossible.";
+        if (fbEl) feedback(fbEl, msg, true); else alert(msg);
+      }
+    });
+  }
+
+  function fmtDateTime(d) { try { return new Date(d).toLocaleString("fr-FR"); } catch (e) { return d; } }
+
+  // Export CSV de l'historique des mails
+  $("btnExportMailsCsv").addEventListener("click", function () {
+    if (!mailState.all.length) { alert("Aucun mail à exporter."); return; }
+    var cols = ["Date", "Destinataire", "Email", "Événement", "Type", "Sujet", "Statut"];
+    function csvCell(v) { v = String(v == null ? "" : v).replace(/"/g, '""'); return '"' + v + '"'; }
+    var lines = [cols.map(csvCell).join(",")];
+    mailState.all.forEach(function (m) {
+      var name = ((m.recipient_first_name || "") + " " + (m.recipient_last_name || "")).trim();
+      lines.push([
+        fmtDateTime(m.created_at), name, m.recipient_email,
+        EVENT_LABEL[m.event_type] || "", MAIL_TYPE_LABEL[m.email_type] || m.email_type || "",
+        m.subject || "", m.status || ""
+      ].map(csvCell).join(","));
+    });
+    var blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "top-hoops-historique-mails.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
 
   /* ---------- INIT ---------- */
   (function init() {
