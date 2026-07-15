@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /assets/
+Disallow: /js/
+Disallow: /css/
+
+Sitemap: https://tophoops.fr/sitemap.xml
