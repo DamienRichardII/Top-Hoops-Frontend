@@ -1423,3 +1423,21 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .kpi-card.kpi-pending .kpi-value{color:#f2d27a}
 .kpi-card.kpi-confirmed .kpi-value{color:#63e6a0}
 .kpi-card.kpi-rejected .kpi-value{color:#ff8f8f}
+
+/* ===== Suivi paiement (admin CRM) ===== */
+.pay-cell{display:flex;flex-direction:column;gap:7px;align-items:flex-start;white-space:nowrap}
+.pay-check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.pay-check input{position:absolute;opacity:0;width:0;height:0}
+.pay-box{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;border:1.5px solid rgba(133,218,237,.5);background:rgba(133,218,237,.06);transition:all .18s ease;flex:0 0 auto}
+.pay-box svg{width:15px;height:15px;stroke:#06080B;opacity:0;transform:scale(.6);transition:all .18s ease}
+.pay-check.checked .pay-box{background:#85DAED;border-color:#85DAED;box-shadow:0 0 12px rgba(133,218,237,.45)}
+.pay-check.checked .pay-box svg{opacity:1;transform:scale(1)}
+.pay-check:hover .pay-box{border-color:#85DAED}
+.pay-text{font-size:.78rem;color:#9AA9B5;font-weight:600}
+.pay-check.checked .pay-text{color:#D7E1E7}
+.pay-check input:focus-visible + .pay-box{outline:2px solid #85DAED;outline-offset:2px}
+@media print{
+  .pay-check input,.pay-box{display:none}
+  .pay-text{display:none}
+  .pay-cell{gap:0}
+}

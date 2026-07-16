@@ -109,6 +109,8 @@
           <div class="kpi-card kpi-pending"><div class="kpi-label">En attente</div><div class="kpi-value" id="kpiPending">—</div></div>
           <div class="kpi-card kpi-confirmed"><div class="kpi-label">Confirmés</div><div class="kpi-value" id="kpiConfirmed">—</div></div>
           <div class="kpi-card kpi-rejected"><div class="kpi-label">Refusés</div><div class="kpi-value" id="kpiRejected">—</div></div>
+          <div class="kpi-card kpi-confirmed"><div class="kpi-label">Paiements reçus</div><div class="kpi-value" id="kpiPaid">—</div></div>
+          <div class="kpi-card kpi-pending"><div class="kpi-label">Paiements en attente</div><div class="kpi-value" id="kpiUnpaid">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Dernière inscription</div><div class="kpi-value" id="kpiLatest" style="font-size:1.1rem">—</div></div>
         </div>
 
@@ -119,6 +121,8 @@
             <button class="filter-btn" data-filter="status:pending">En attente</button>
             <button class="filter-btn" data-filter="status:confirmed">Confirmés</button>
             <button class="filter-btn" data-filter="status:rejected">Refusés</button>
+            <button class="filter-btn" data-filter="payment:paid">Payés</button>
+            <button class="filter-btn" data-filter="payment:unpaid">En attente de paiement</button>
             <button class="filter-btn" data-filter="event:summerleague">Summer League</button>
             <button class="filter-btn" data-filter="event:ligue_top_hoops">Ligue Top Hoops</button>
           </div>
@@ -139,7 +143,7 @@
             <thead>
               <tr>
                 <th>Nom</th><th>Prénom</th><th>Âge</th><th>Poste</th><th>Niveau</th>
-                <th>Frais 20€</th><th>Événement</th><th>Statut</th><th>Mail envoyé</th><th>Email</th><th>Téléphone</th><th>Date</th><th class="no-print">Actions</th>
+                <th>Frais 20€</th><th>Événement</th><th>Statut</th><th>Paiement</th><th>Mail envoyé</th><th>Email</th><th>Téléphone</th><th>Date</th><th class="no-print">Actions</th>
               </tr>
             </thead>
             <tbody id="regTbody"></tbody>

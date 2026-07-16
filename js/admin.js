@@ -145,6 +145,8 @@
       if ($("kpiPending")) $("kpiPending").textContent = r.data.pending != null ? r.data.pending : "-";
       if ($("kpiConfirmed")) $("kpiConfirmed").textContent = r.data.confirmed != null ? r.data.confirmed : "-";
       if ($("kpiRejected")) $("kpiRejected").textContent = r.data.rejected != null ? r.data.rejected : "-";
+      if ($("kpiPaid")) $("kpiPaid").textContent = r.data.payments_received != null ? r.data.payments_received : "-";
+      if ($("kpiUnpaid")) $("kpiUnpaid").textContent = r.data.payments_pending != null ? r.data.payments_pending : "-";
       var last = (r.data.latest && r.data.latest[0]);
       $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "-";
     });
@@ -159,6 +161,7 @@
     if (f && f !== "all") {
       if (f.indexOf("status:") === 0) q += "status=" + f.slice(7) + "&";
       else if (f.indexOf("event:") === 0) q += "event=" + f.slice(6) + "&";
+      else if (f.indexOf("payment:") === 0) q += "payment=" + f.slice(8) + "&";
       else q += "event=" + f + "&"; // rétrocompat
     }
     if (state.search) q += "search=" + encodeURIComponent(state.search);
@@ -186,6 +189,18 @@
     }
     return '<span class="status-badge muted">Non envoyé</span>';
   }
+  // Cellule paiement : checkbox premium (toggle AJAX) + badge de statut
+  function paymentCell(r) {
+    var paid = r.payment_received === true;
+    return '<div class="pay-cell">' +
+      '<label class="pay-check' + (paid ? " checked" : "") + '" title="Cocher quand le paiement est reçu">' +
+        '<input type="checkbox" data-pay="' + r.id + '"' + (paid ? " checked" : "") + '>' +
+        '<span class="pay-box">' + IC.check + '</span>' +
+        '<span class="pay-text">Paiement reçu</span>' +
+      '</label>' +
+      '<span class="status-badge ' + (paid ? "ok" : "warn") + ' pay-badge">' + (paid ? "Payé" : "En attente de paiement") + "</span>" +
+    "</div>";
+  }
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]); }); }
   function fmtDate(d) { try { return new Date(d).toLocaleDateString("fr-FR"); } catch (e) { return d; } }
@@ -205,6 +220,7 @@
         "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
         "<td>" + regStatusBadge(r.status) + "</td>" +
+        '<td class="pay-col">' + paymentCell(r) + "</td>" +
         '<td class="mail-col">' + mailCell(r) + "</td>" +
         "<td>" + esc(r.email) + "</td>" +
         "<td>" + esc(r.phone || "") + "</td>" +
@@ -232,6 +248,32 @@
     }
     else if (b.dataset.reject) rejectReg(b.dataset.reject);
     else if (b.dataset.del) deleteReg(b.dataset.del);
+  });
+
+  // Toggle paiement (mise à jour instantanée sans rechargement)
+  $("regTbody").addEventListener("change", function (e) {
+    var cb = e.target;
+    if (!cb.matches || !cb.matches('input[data-pay]')) return;
+    var id = cb.dataset.pay;
+    var paid = cb.checked;
+    cb.disabled = true;
+    api("/api/admin/registrations/" + id + "/payment", { method: "PATCH", body: { payment_received: paid } })
+      .then(function (res) {
+        cb.disabled = false;
+        if (!res.ok) { cb.checked = !paid; alert("Mise à jour du paiement impossible."); return; }
+        // MAJ locale + visuelle sans recharger toute la liste
+        var row = state.all.find(function (x) { return x.id === id; });
+        if (row) row.payment_received = paid;
+        var label = cb.closest(".pay-check");
+        if (label) label.classList.toggle("checked", paid);
+        var badge = cb.closest(".pay-cell") && cb.closest(".pay-cell").querySelector(".pay-badge");
+        if (badge) {
+          badge.className = "status-badge " + (paid ? "ok" : "warn") + " pay-badge";
+          badge.textContent = paid ? "Payé" : "En attente de paiement";
+        }
+        loadStats(); // rafraîchit les KPI paiements
+      })
+      .catch(function () { cb.disabled = false; cb.checked = !paid; alert("Serveur injoignable."); });
   });
 
   // Refuser un joueur (aucun mail envoyé)
@@ -361,11 +403,12 @@
     var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
     var rows = state.all.map(function (r) {
       var mail = r.mail_sent ? ("Oui" + (r.mail_sent_at ? " (" + fmtDate(r.mail_sent_at) + ")" : "")) : "Non";
+      var pay = r.payment_received ? "Paye" : "Non paye";
       return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "",
-              r.registration_fee_accepted || "-", STATUS_FR[r.status] || "En attente", mail];
+              r.registration_fee_accepted || "-", STATUS_FR[r.status] || "En attente", pay, mail];
     });
     doc.autoTable({
-      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac", "Statut", "Mail envoye"]],
+      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac", "Statut", "Paiement", "Mail envoye"]],
       body: rows, startY: 36, styles: { fontSize: 8 },
       headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
     });
