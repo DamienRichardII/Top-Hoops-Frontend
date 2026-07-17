@@ -257,6 +257,8 @@
     $("regEmpty").hidden = state.all.length > 0;
     state.all.forEach(function (r) {
       var tr = document.createElement("tr");
+      tr.className = r.payment_method === "bank_transfer" ? "payment-method-transfer"
+        : (r.payment_method === "cash" ? "payment-method-cash" : "payment-method-unknown");
       tr.innerHTML =
         "<td>" + esc(r.last_name) + "</td>" +
         "<td>" + esc(r.first_name) + "</td>" +
@@ -440,33 +442,105 @@
   });
 
   /* ---------- PDF + IMPRESSION ---------- */
-  function filterLabel() { return state.filter === "all" ? "Tous" : EVENT_LABEL[state.filter]; }
+  // Libellé de l'événement pour l'en-tête d'export
+  function eventExportLabel() {
+    if (state.filter && state.filter.indexOf("event:") === 0) return EVENT_LABEL[state.filter.slice(6)] || "Tous";
+    return "Tous";
+  }
+
+  // Tri OBLIGATOIRE : Virement -> Espèces -> Non renseigné, puis Nom + Prénom (alpha FR)
+  function paymentSortKey(m) { return m === "bank_transfer" ? 0 : (m === "cash" ? 1 : 2); }
+  function sortByPaymentMethod(list) {
+    return list.slice().sort(function (a, b) {
+      var ao = paymentSortKey(a.payment_method), bo = paymentSortKey(b.payment_method);
+      if (ao !== bo) return ao - bo;
+      return ((a.last_name || "") + " " + (a.first_name || ""))
+        .localeCompare((b.last_name || "") + " " + (b.first_name || ""), "fr", { sensitivity: "base" });
+    });
+  }
+
+  var PDF_STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
+  var PDF_METHOD_FR = { cash: "Especes", bank_transfer: "Virement" };
+  // Définition des 3 groupes (ordre + couleurs). Fonds clairs + texte foncé = lisible.
+  var PDF_GROUPS = [
+    { key: "bank_transfer", title: "JOUEURS - PAIEMENT PAR VIREMENT", fill: [215, 245, 222], text: [15, 70, 35], bar: [15, 70, 35] },
+    { key: "cash",          title: "JOUEURS - PAIEMENT EN ESPECES",   fill: [255, 220, 220], text: [105, 20, 20], bar: [105, 20, 20] },
+    { key: "none",          title: "JOUEURS - MODE NON RENSEIGNE",     fill: [235, 238, 242], text: [40, 45, 50], bar: [90, 95, 100] }
+  ];
 
   $("btnExportPdf").addEventListener("click", function () {
     if (!window.jspdf) { alert("Librairie PDF non chargee."); return; }
-    var doc = new window.jspdf.jsPDF();
-    doc.setFontSize(16); doc.text("Top Hoops - Liste des joueurs inscrits", 14, 18);
-    doc.setFontSize(10); doc.setTextColor(90);
-    doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 14, 25);
-    doc.text("Filtre : " + filterLabel(), 14, 30);
-    var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
-    var METHOD_FR = { cash: "Especes", bank_transfer: "Virement" };
-    var rows = state.all.map(function (r) {
-      var mail = r.mail_sent ? ("Oui" + (r.mail_sent_at ? " (" + fmtDate(r.mail_sent_at) + ")" : "")) : "Non";
-      var pay = r.payment_received ? "Paye" : "Non paye";
-      var method = METHOD_FR[r.payment_method] || "Non renseigne";
-      return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "",
-              STATUS_FR[r.status] || "En attente", method, pay, mail];
+    var doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    var M = 14;
+
+    // En-tête (DA Top Hoops)
+    doc.setTextColor(6, 8, 11); doc.setFontSize(16); doc.setFont(undefined, "bold");
+    doc.text("TOP HOOPS - LISTE FINALE DES JOUEURS", M, 15);
+    doc.setFont(undefined, "normal"); doc.setFontSize(10); doc.setTextColor(90);
+    doc.text("Evenement : " + eventExportLabel(), M, 22);
+    doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), M, 27);
+
+    // Légende (carrés colorés + libellés) — compréhensible même en N&B via les libellés
+    var lx = M, ly = 32.5, sq = 4;
+    [[[215,245,222],"Vert : paiement par virement"],
+     [[255,220,220],"Rouge : paiement en especes"],
+     [[235,238,242],"Gris : mode non renseigne"]].forEach(function (item) {
+      doc.setFillColor(item[0][0], item[0][1], item[0][2]);
+      doc.setDrawColor(150); doc.rect(lx, ly - 3.2, sq, sq, "FD");
+      doc.setTextColor(40); doc.setFontSize(9);
+      doc.text(item[1], lx + sq + 2, ly);
+      lx += doc.getTextWidth(item[1]) + sq + 12;
     });
-    doc.autoTable({
-      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Statut", "Mode paiement", "Paiement", "Mail envoye"]],
-      body: rows, startY: 36, styles: { fontSize: 8 },
-      headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
+
+    var head = [["Nom", "Prenom", "Age", "Poste", "Niveau", "Statut", "Mode de paiement", "Paiement recu", "Mail envoye"]];
+    var sorted = sortByPaymentMethod(state.all);
+    var startY = 38;
+    var printedAny = false;
+
+    PDF_GROUPS.forEach(function (g) {
+      var players = sorted.filter(function (r) {
+        return g.key === "none" ? !r.payment_method : r.payment_method === g.key;
+      });
+      if (!players.length) return;
+      printedAny = true;
+
+      // Barre de sous-titre du groupe (fond foncé + texte blanc), sans données joueur
+      doc.setFillColor(g.bar[0], g.bar[1], g.bar[2]);
+      doc.rect(M, startY, 269, 7, "F");
+      doc.setTextColor(255, 255, 255); doc.setFontSize(10); doc.setFont(undefined, "bold");
+      doc.text(g.title + "  (" + players.length + ")", M + 3, startY + 4.8);
+      doc.setFont(undefined, "normal");
+
+      var body = players.map(function (r) {
+        var mail = r.mail_sent ? ("Oui" + (r.mail_sent_at ? " " + fmtDate(r.mail_sent_at) : "")) : "Non";
+        return [r.last_name || "-", r.first_name || "-", r.age || "-", r.position || "-", r.level || "-",
+                PDF_STATUS_FR[r.status] || "En attente", PDF_METHOD_FR[r.payment_method] || "Non renseigne",
+                r.payment_received ? "Paye" : "Non paye", mail];
+      });
+
+      doc.autoTable({
+        head: head, body: body, startY: startY + 7, theme: "grid",
+        styles: { fontSize: 8.5, cellPadding: 2.4, textColor: g.text, lineColor: [180, 190, 200], lineWidth: 0.2, valign: "middle" },
+        headStyles: { fillColor: [6, 8, 11], textColor: [250, 250, 250], fontStyle: "bold" },
+        bodyStyles: { fillColor: g.fill, textColor: g.text },
+        margin: { left: M, right: M }
+      });
+      startY = doc.lastAutoTable.finalY + 6;
     });
-    doc.save("top-hoops-inscrits-" + state.filter + ".pdf");
+
+    if (!printedAny) { doc.setTextColor(90); doc.text("Aucun joueur pour ce filtre.", M, startY + 4); }
+    doc.save("top-hoops-liste-finale.pdf");
   });
 
-  $("btnPrint").addEventListener("click", function () { window.print(); });
+  // Impression : même tri que le PDF (Virement -> Especes -> Non renseigne), puis restauration
+  $("btnPrint").addEventListener("click", function () {
+    var original = state.all;
+    state.all = sortByPaymentMethod(original);
+    renderTable();
+    function restore() { state.all = original; renderTable(); window.removeEventListener("afterprint", restore); }
+    window.addEventListener("afterprint", restore);
+    window.print();
+  });
 
   /* ---------- HISTORIQUE DES MAILS ENVOYÉS ---------- */
   var mailState = { all: [], filter: "all", search: "", currentId: null };

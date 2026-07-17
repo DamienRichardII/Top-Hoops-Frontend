@@ -1456,3 +1456,13 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .payment-method-select{display:none}
   .method-cell{gap:0}
 }
+
+/* ===== Impression : code couleur par mode de paiement (identique au PDF) ===== */
+@media print{
+  .payment-method-transfer td{background:#d7f5de !important;color:#0f4623 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .payment-method-cash td{background:#ffdcdc !important;color:#691414 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .payment-method-unknown td{background:#ebeef2 !important;color:#282d32 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .payment-method-transfer .status-badge,
+  .payment-method-cash .status-badge,
+  .payment-method-unknown .status-badge{background:transparent !important;border:none !important;color:inherit !important}
+}
