@@ -111,8 +111,9 @@
           <div class="kpi-card kpi-rejected"><div class="kpi-label">Refusés</div><div class="kpi-value" id="kpiRejected">—</div></div>
           <div class="kpi-card kpi-confirmed"><div class="kpi-label">Paiements reçus</div><div class="kpi-value" id="kpiPaid">—</div></div>
           <div class="kpi-card kpi-pending"><div class="kpi-label">Paiements en attente</div><div class="kpi-value" id="kpiUnpaid">—</div></div>
-          <div class="kpi-card"><div class="kpi-label">Choix : Virement</div><div class="kpi-value" id="kpiMethodTransfer">—</div></div>
-          <div class="kpi-card"><div class="kpi-label">Choix : Espèces</div><div class="kpi-value" id="kpiMethodCash">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Mode : Virement</div><div class="kpi-value" id="kpiMethodTransfer">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Mode : Espèces</div><div class="kpi-value" id="kpiMethodCash">—</div></div>
+          <div class="kpi-card"><div class="kpi-label">Mode non renseigné</div><div class="kpi-value" id="kpiMethodNone">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Dernière inscription</div><div class="kpi-value" id="kpiLatest" style="font-size:1.1rem">—</div></div>
         </div>
 
@@ -125,8 +126,9 @@
             <button class="filter-btn" data-filter="status:rejected">Refusés</button>
             <button class="filter-btn" data-filter="payment:paid">Payés</button>
             <button class="filter-btn" data-filter="payment:unpaid">En attente de paiement</button>
-            <button class="filter-btn" data-filter="method:cash">Espèces</button>
             <button class="filter-btn" data-filter="method:bank_transfer">Virement</button>
+            <button class="filter-btn" data-filter="method:cash">Espèces</button>
+            <button class="filter-btn" data-filter="method:none">Mode non renseigné</button>
             <button class="filter-btn" data-filter="event:summerleague">Summer League</button>
             <button class="filter-btn" data-filter="event:ligue_top_hoops">Ligue Top Hoops</button>
           </div>

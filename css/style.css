@@ -1444,3 +1444,15 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 
 /* ===== Mode de paiement déclaré (badge cyan) ===== */
 .status-badge.method{background:rgba(133,218,237,.12);color:#85DAED;border:1px solid rgba(133,218,237,.4)}
+
+/* ===== Mode de paiement : select éditable admin ===== */
+.method-cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:150px}
+.payment-method-select{width:100%;max-width:190px;background:#06080B;color:#FAFAFA;border:1px solid rgba(133,218,237,.35);border-radius:9px;padding:7px 10px;font-family:inherit;font-size:.85rem;cursor:pointer;transition:border-color .18s ease}
+.payment-method-select:hover{border-color:#85DAED}
+.payment-method-select:focus-visible{outline:2px solid #85DAED;outline-offset:2px;border-color:#85DAED}
+.payment-method-select:disabled{opacity:.55;cursor:progress}
+.payment-method-select option{background:#0A0D12;color:#FAFAFA}
+@media print{
+  .payment-method-select{display:none}
+  .method-cell{gap:0}
+}

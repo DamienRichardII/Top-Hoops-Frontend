@@ -149,6 +149,7 @@
       if ($("kpiUnpaid")) $("kpiUnpaid").textContent = r.data.payments_pending != null ? r.data.payments_pending : "-";
       if ($("kpiMethodTransfer")) $("kpiMethodTransfer").textContent = r.data.method_transfer != null ? r.data.method_transfer : "-";
       if ($("kpiMethodCash")) $("kpiMethodCash").textContent = r.data.method_cash != null ? r.data.method_cash : "-";
+      if ($("kpiMethodNone")) $("kpiMethodNone").textContent = r.data.method_none != null ? r.data.method_none : "-";
       var last = (r.data.latest && r.data.latest[0]);
       $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "-";
     });
@@ -202,6 +203,37 @@
     if (!m) return '<span class="status-badge muted">Non renseigné</span>';
     return '<span class="status-badge method">' + paymentMethodLabel(m) + "</span>";
   }
+  // Select éditable du mode de paiement (géré par l'admin) + badge
+  function paymentMethodSelectCell(r) {
+    var m = r.payment_method || "";
+    function opt(v, label) { return '<option value="' + v + '"' + (m === v ? " selected" : "") + ">" + label + "</option>"; }
+    return '<div class="method-cell">' +
+      '<select class="payment-method-select" data-method="' + r.id + '" aria-label="Mode de paiement de ' + esc((r.first_name || "") + " " + (r.last_name || "")) + '">' +
+        opt("", "Non renseigné") + opt("bank_transfer", "Virement") + opt("cash", "Espèces") +
+      "</select>" +
+      '<span class="method-badge-wrap">' + paymentMethodBadge(r.payment_method) + "</span>" +
+    "</div>";
+  }
+  // Handler commun (tableau + fiche détail) : mise à jour sans rechargement
+  document.addEventListener("change", function (e) {
+    var sel = e.target;
+    if (!sel.matches || !sel.matches("select.payment-method-select")) return;
+    var id = sel.dataset.method;
+    var value = sel.value === "" ? null : sel.value;
+    sel.disabled = true;
+    api("/api/admin/registrations/" + id + "/payment-method", { method: "PATCH", body: { payment_method: value } })
+      .then(function (res) {
+        sel.disabled = false;
+        if (!res.ok) { alert("Mise à jour du mode de paiement impossible."); loadRegistrations(); return; }
+        var row = state.all.find(function (x) { return x.id === id; });
+        if (row) row.payment_method = value;
+        // MAJ du badge à côté du select (dans le tableau)
+        var wrap = sel.closest(".method-cell") && sel.closest(".method-cell").querySelector(".method-badge-wrap");
+        if (wrap) wrap.innerHTML = paymentMethodBadge(value);
+        loadStats(); // rafraîchit les KPI modes de paiement
+      })
+      .catch(function () { sel.disabled = false; alert("Serveur injoignable."); loadRegistrations(); });
+  });
 
   // Cellule paiement : checkbox premium (toggle AJAX) + badge de statut
   function paymentCell(r) {
@@ -234,7 +266,7 @@
         "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
         "<td>" + regStatusBadge(r.status) + "</td>" +
-        "<td>" + paymentMethodBadge(r.payment_method) + "</td>" +
+        '<td class="method-col">' + paymentMethodSelectCell(r) + "</td>" +
         '<td class="pay-col">' + paymentCell(r) + "</td>" +
         '<td class="mail-col">' + mailCell(r) + "</td>" +
         "<td>" + esc(r.email) + "</td>" +
@@ -336,7 +368,7 @@
       return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
     }).join("");
     html += '<div class="d-item"><span>Statut</span><strong>' + regStatusBadge(r.status) + "</strong></div>";
-    html += '<div class="d-item"><span>Mode de paiement choisi</span><strong>' + paymentMethodBadge(r.payment_method) + "</strong></div>";
+    html += '<div class="d-item"><span>Mode de paiement</span><strong>' + paymentMethodSelectCell(r) + "</strong></div>";
     html += '<div class="d-item"><span>Paiement reçu</span><strong>' + (r.payment_received ? "Oui" : "Non") + "</strong></div>";
     html += '<div class="d-item"><span>Mail de confirmation</span><strong>' + mailCell(r) + "</strong></div>";
     html += '<div class="d-item full"><span>Date d\'inscription</span><strong>' + fmtDate(r.created_at) + "</strong></div>";
