@@ -1466,3 +1466,14 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .payment-method-cash .status-badge,
   .payment-method-unknown .status-badge{background:transparent !important;border:none !important;color:inherit !important}
 }
+
+/* ===== Onglets catégorie admin (Seniors / U23) ===== */
+.admin-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.admin-tab{background:rgba(133,218,237,.06);border:1px solid rgba(133,218,237,.25);color:#D7E1E7;padding:11px 30px;border-radius:999px;font-weight:800;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:all .18s ease}
+.admin-tab:hover{border-color:#85DAED;color:#fff}
+.admin-tab.active{background:#85DAED;color:#06080B;border-color:#85DAED;box-shadow:0 0 18px rgba(133,218,237,.4)}
+.admin-tab:focus-visible{outline:2px solid #85DAED;outline-offset:3px}
+@media(max-width:600px){
+  .admin-tabs{gap:6px}
+  .admin-tab{flex:1 1 auto;padding:11px 14px;text-align:center;font-size:.9rem}
+}

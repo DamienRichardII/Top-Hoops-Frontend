@@ -38,7 +38,7 @@
     el.textContent = msg;
   }
 
-  var state = { all: [], filter: "all", search: "", currentId: null, mailMode: null };
+  var state = { all: [], filter: "all", search: "", currentId: null, mailMode: null, category: "seniors" };
 
   // Icones SVG (contour)
   var IC = {
@@ -137,7 +137,7 @@
 
   /* ---------- STATS ---------- */
   function loadStats() {
-    api("/api/admin/stats").then(function (r) {
+    api("/api/admin/stats?category=" + state.category).then(function (r) {
       if (!r.ok) return;
       $("kpiTotal").textContent = r.data.total;
       $("kpiSummer").textContent = r.data.summerleague;
@@ -159,7 +159,7 @@
   var EVENT_LABEL = { summerleague: "Summer League", ligue_top_hoops: "Ligue Top Hoops" };
 
   function loadRegistrations() {
-    var q = "?";
+    var q = "?category=" + state.category + "&";
     var f = state.filter;
     if (f && f !== "all") {
       if (f.indexOf("status:") === 0) q += "status=" + f.slice(7) + "&";
@@ -193,12 +193,16 @@
     }
     return '<span class="status-badge muted">Non envoyé</span>';
   }
-  // Mode de paiement DÉCLARÉ par le joueur (≠ paiement reçu)
+  // Mode de paiement renseigné par l'admin (≠ paiement reçu)
   function paymentMethodLabel(m) {
     if (m === "cash") return "Espèces";
-    if (m === "bank_transfer") return "Virement";
+    if (m === "bank_transfer") return "Virement bancaire";
+    if (m === "paypal") return "PayPal";
+    if (m === "revolut") return "Revolut";
     return "Non renseigné";
   }
+  // Un paiement électronique (≠ espèces) => ligne verte
+  function isElectronic(m) { return m === "bank_transfer" || m === "paypal" || m === "revolut"; }
   function paymentMethodBadge(m) {
     if (!m) return '<span class="status-badge muted">Non renseigné</span>';
     return '<span class="status-badge method">' + paymentMethodLabel(m) + "</span>";
@@ -209,7 +213,8 @@
     function opt(v, label) { return '<option value="' + v + '"' + (m === v ? " selected" : "") + ">" + label + "</option>"; }
     return '<div class="method-cell">' +
       '<select class="payment-method-select" data-method="' + r.id + '" aria-label="Mode de paiement de ' + esc((r.first_name || "") + " " + (r.last_name || "")) + '">' +
-        opt("", "Non renseigné") + opt("bank_transfer", "Virement") + opt("cash", "Espèces") +
+        opt("", "Non renseigné") + opt("bank_transfer", "Virement bancaire") +
+        opt("paypal", "PayPal") + opt("revolut", "Revolut") + opt("cash", "Espèces") +
       "</select>" +
       '<span class="method-badge-wrap">' + paymentMethodBadge(r.payment_method) + "</span>" +
     "</div>";
@@ -257,7 +262,7 @@
     $("regEmpty").hidden = state.all.length > 0;
     state.all.forEach(function (r) {
       var tr = document.createElement("tr");
-      tr.className = r.payment_method === "bank_transfer" ? "payment-method-transfer"
+      tr.className = isElectronic(r.payment_method) ? "payment-method-transfer"
         : (r.payment_method === "cash" ? "payment-method-cash" : "payment-method-unknown");
       tr.innerHTML =
         "<td>" + esc(r.last_name) + "</td>" +
@@ -335,6 +340,20 @@
       else alert("Impossible de refuser ce joueur.");
     });
   }
+
+  // Onglets catégorie (Seniors / U23) — chaque onglet est indépendant
+  document.querySelectorAll(".admin-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".admin-tab").forEach(function (t) {
+        t.classList.remove("active"); t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active"); tab.setAttribute("aria-selected", "true");
+      state.category = tab.getAttribute("data-category");
+      if ($("kpiTotalLabel")) $("kpiTotalLabel").textContent = state.category === "u23" ? "Total U23" : "Total Seniors";
+      loadStats();
+      loadRegistrations();
+    });
+  });
 
   // Filtres inscriptions (statut + événement)
   document.querySelectorAll(".filter-btn[data-filter]").forEach(function (btn) {
@@ -448,8 +467,9 @@
     return "Tous";
   }
 
-  // Tri OBLIGATOIRE : Virement -> Espèces -> Non renseigné, puis Nom + Prénom (alpha FR)
-  function paymentSortKey(m) { return m === "bank_transfer" ? 0 : (m === "cash" ? 1 : 2); }
+  // Tri OBLIGATOIRE : Électroniques (virement/paypal/revolut) -> Espèces -> Non renseigné,
+  // puis Nom + Prénom (alpha FR) à l'intérieur de chaque groupe.
+  function paymentSortKey(m) { return isElectronic(m) ? 0 : (m === "cash" ? 1 : 2); }
   function sortByPaymentMethod(list) {
     return list.slice().sort(function (a, b) {
       var ao = paymentSortKey(a.payment_method), bo = paymentSortKey(b.payment_method);
@@ -460,12 +480,13 @@
   }
 
   var PDF_STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
-  var PDF_METHOD_FR = { cash: "Especes", bank_transfer: "Virement" };
+  var PDF_METHOD_FR = { cash: "Especes", bank_transfer: "Virement bancaire", paypal: "PayPal", revolut: "Revolut" };
   // Définition des 3 groupes (ordre + couleurs). Fonds clairs + texte foncé = lisible.
+  // "match" identifie l'appartenance au groupe selon payment_method.
   var PDF_GROUPS = [
-    { key: "bank_transfer", title: "JOUEURS - PAIEMENT PAR VIREMENT", fill: [215, 245, 222], text: [15, 70, 35], bar: [15, 70, 35] },
-    { key: "cash",          title: "JOUEURS - PAIEMENT EN ESPECES",   fill: [255, 220, 220], text: [105, 20, 20], bar: [105, 20, 20] },
-    { key: "none",          title: "JOUEURS - MODE NON RENSEIGNE",     fill: [235, 238, 242], text: [40, 45, 50], bar: [90, 95, 100] }
+    { match: function (m) { return isElectronic(m); }, title: "JOUEURS - PAIEMENTS ELECTRONIQUES (VIREMENT / PAYPAL / REVOLUT)", fill: [215, 245, 222], text: [15, 70, 35], bar: [15, 70, 35] },
+    { match: function (m) { return m === "cash"; },    title: "JOUEURS - PAIEMENT EN ESPECES", fill: [255, 220, 220], text: [105, 20, 20], bar: [105, 20, 20] },
+    { match: function (m) { return !m; },              title: "JOUEURS - MODE NON RENSEIGNE", fill: [235, 238, 242], text: [40, 45, 50], bar: [90, 95, 100] }
   ];
 
   $("btnExportPdf").addEventListener("click", function () {
@@ -475,9 +496,10 @@
 
     // En-tête (DA Top Hoops)
     doc.setTextColor(6, 8, 11); doc.setFontSize(16); doc.setFont(undefined, "bold");
-    doc.text("TOP HOOPS - LISTE FINALE DES JOUEURS", M, 15);
+    var catLabel = state.category === "u23" ? "U23" : "Seniors";
+    doc.text("TOP HOOPS - LISTE FINALE DES JOUEURS - " + catLabel.toUpperCase(), M, 15);
     doc.setFont(undefined, "normal"); doc.setFontSize(10); doc.setTextColor(90);
-    doc.text("Evenement : " + eventExportLabel(), M, 22);
+    doc.text("Categorie : " + catLabel + "     Evenement : " + eventExportLabel(), M, 22);
     doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), M, 27);
 
     // Légende (carrés colorés + libellés) — compréhensible même en N&B via les libellés
@@ -498,9 +520,7 @@
     var printedAny = false;
 
     PDF_GROUPS.forEach(function (g) {
-      var players = sorted.filter(function (r) {
-        return g.key === "none" ? !r.payment_method : r.payment_method === g.key;
-      });
+      var players = sorted.filter(function (r) { return g.match(r.payment_method); });
       if (!players.length) return;
       printedAny = true;
 
@@ -529,7 +549,7 @@
     });
 
     if (!printedAny) { doc.setTextColor(90); doc.text("Aucun joueur pour ce filtre.", M, startY + 4); }
-    doc.save("top-hoops-liste-finale.pdf");
+    doc.save("top-hoops-liste-finale-" + state.category + ".pdf");
   });
 
   // Impression : même tri que le PDF (Virement -> Especes -> Non renseigne), puis restauration

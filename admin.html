@@ -101,9 +101,15 @@
 
     <section class="section" style="padding-top:10px">
       <div class="container">
+        <!-- Onglets catégorie -->
+        <div class="admin-tabs" role="tablist" aria-label="Catégorie de joueurs">
+          <button class="admin-tab active" data-category="seniors" role="tab" aria-selected="true">Seniors</button>
+          <button class="admin-tab" data-category="u23" role="tab" aria-selected="false">U23</button>
+        </div>
+
         <!-- KPI -->
         <div class="kpi-grid" id="kpiGrid">
-          <div class="kpi-card"><div class="kpi-label">Total inscrits</div><div class="kpi-value" id="kpiTotal">—</div></div>
+          <div class="kpi-card"><div class="kpi-label" id="kpiTotalLabel">Total Seniors</div><div class="kpi-value" id="kpiTotal">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Summer League</div><div class="kpi-value" id="kpiSummer">—</div></div>
           <div class="kpi-card"><div class="kpi-label">Ligue Top Hoops</div><div class="kpi-value" id="kpiLigue">—</div></div>
           <div class="kpi-card kpi-pending"><div class="kpi-label">En attente</div><div class="kpi-value" id="kpiPending">—</div></div>
@@ -126,7 +132,9 @@
             <button class="filter-btn" data-filter="status:rejected">Refusés</button>
             <button class="filter-btn" data-filter="payment:paid">Payés</button>
             <button class="filter-btn" data-filter="payment:unpaid">En attente de paiement</button>
-            <button class="filter-btn" data-filter="method:bank_transfer">Virement</button>
+            <button class="filter-btn" data-filter="method:bank_transfer">Virement bancaire</button>
+            <button class="filter-btn" data-filter="method:paypal">PayPal</button>
+            <button class="filter-btn" data-filter="method:revolut">Revolut</button>
             <button class="filter-btn" data-filter="method:cash">Espèces</button>
             <button class="filter-btn" data-filter="method:none">Mode non renseigné</button>
             <button class="filter-btn" data-filter="event:summerleague">Summer League</button>
