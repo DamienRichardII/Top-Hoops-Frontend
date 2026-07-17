@@ -147,6 +147,8 @@
       if ($("kpiRejected")) $("kpiRejected").textContent = r.data.rejected != null ? r.data.rejected : "-";
       if ($("kpiPaid")) $("kpiPaid").textContent = r.data.payments_received != null ? r.data.payments_received : "-";
       if ($("kpiUnpaid")) $("kpiUnpaid").textContent = r.data.payments_pending != null ? r.data.payments_pending : "-";
+      if ($("kpiMethodTransfer")) $("kpiMethodTransfer").textContent = r.data.method_transfer != null ? r.data.method_transfer : "-";
+      if ($("kpiMethodCash")) $("kpiMethodCash").textContent = r.data.method_cash != null ? r.data.method_cash : "-";
       var last = (r.data.latest && r.data.latest[0]);
       $("kpiLatest").textContent = last ? (last.first_name + " " + last.last_name) : "-";
     });
@@ -162,6 +164,7 @@
       if (f.indexOf("status:") === 0) q += "status=" + f.slice(7) + "&";
       else if (f.indexOf("event:") === 0) q += "event=" + f.slice(6) + "&";
       else if (f.indexOf("payment:") === 0) q += "payment=" + f.slice(8) + "&";
+      else if (f.indexOf("method:") === 0) q += "payment_method=" + f.slice(7) + "&";
       else q += "event=" + f + "&"; // rétrocompat
     }
     if (state.search) q += "search=" + encodeURIComponent(state.search);
@@ -189,6 +192,17 @@
     }
     return '<span class="status-badge muted">Non envoyé</span>';
   }
+  // Mode de paiement DÉCLARÉ par le joueur (≠ paiement reçu)
+  function paymentMethodLabel(m) {
+    if (m === "cash") return "Espèces";
+    if (m === "bank_transfer") return "Virement";
+    return "Non renseigné";
+  }
+  function paymentMethodBadge(m) {
+    if (!m) return '<span class="status-badge muted">Non renseigné</span>';
+    return '<span class="status-badge method">' + paymentMethodLabel(m) + "</span>";
+  }
+
   // Cellule paiement : checkbox premium (toggle AJAX) + badge de statut
   function paymentCell(r) {
     var paid = r.payment_received === true;
@@ -220,6 +234,7 @@
         "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
         "<td>" + regStatusBadge(r.status) + "</td>" +
+        "<td>" + paymentMethodBadge(r.payment_method) + "</td>" +
         '<td class="pay-col">' + paymentCell(r) + "</td>" +
         '<td class="mail-col">' + mailCell(r) + "</td>" +
         "<td>" + esc(r.email) + "</td>" +
@@ -321,6 +336,8 @@
       return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
     }).join("");
     html += '<div class="d-item"><span>Statut</span><strong>' + regStatusBadge(r.status) + "</strong></div>";
+    html += '<div class="d-item"><span>Mode de paiement choisi</span><strong>' + paymentMethodBadge(r.payment_method) + "</strong></div>";
+    html += '<div class="d-item"><span>Paiement reçu</span><strong>' + (r.payment_received ? "Oui" : "Non") + "</strong></div>";
     html += '<div class="d-item"><span>Mail de confirmation</span><strong>' + mailCell(r) + "</strong></div>";
     html += '<div class="d-item full"><span>Date d\'inscription</span><strong>' + fmtDate(r.created_at) + "</strong></div>";
     $("detailBody").innerHTML = html;
@@ -401,14 +418,16 @@
     doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 14, 25);
     doc.text("Filtre : " + filterLabel(), 14, 30);
     var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
+    var METHOD_FR = { cash: "Especes", bank_transfer: "Virement" };
     var rows = state.all.map(function (r) {
       var mail = r.mail_sent ? ("Oui" + (r.mail_sent_at ? " (" + fmtDate(r.mail_sent_at) + ")" : "")) : "Non";
       var pay = r.payment_received ? "Paye" : "Non paye";
+      var method = METHOD_FR[r.payment_method] || "Non renseigne";
       return [r.last_name, r.first_name, r.position || "", r.level || "", r.age || "",
-              r.registration_fee_accepted || "-", STATUS_FR[r.status] || "En attente", pay, mail];
+              STATUS_FR[r.status] || "En attente", method, pay, mail];
     });
     doc.autoTable({
-      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Frais 20\u20ac", "Statut", "Paiement", "Mail envoye"]],
+      head: [["Nom", "Prenom", "Poste", "Niveau", "Age", "Statut", "Mode paiement", "Paiement", "Mail envoye"]],
       body: rows, startY: 36, styles: { fontSize: 8 },
       headStyles: { fillColor: [133, 218, 237], textColor: [6, 8, 11] }
     });

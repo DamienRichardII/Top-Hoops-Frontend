@@ -1441,3 +1441,6 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .pay-text{display:none}
   .pay-cell{gap:0}
 }
+
+/* ===== Mode de paiement déclaré (badge cyan) ===== */
+.status-badge.method{background:rgba(133,218,237,.12);color:#85DAED;border:1px solid rgba(133,218,237,.4)}
