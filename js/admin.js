@@ -203,6 +203,13 @@
   }
   // Un paiement électronique (≠ espèces) => ligne verte
   function isElectronic(m) { return m === "bank_transfer" || m === "paypal" || m === "revolut"; }
+  // Classe de couleur de LIGNE, basée uniquement sur la valeur technique payment_method
+  // (cash=rouge, électronique=vert, sinon neutre). Fonction unique réutilisée partout.
+  function getPaymentRowClass(m) {
+    if (m === "cash") return "payment-method-cash";
+    if (isElectronic(m)) return "payment-method-transfer";
+    return "payment-method-unknown";
+  }
   function paymentMethodBadge(m) {
     if (!m) return '<span class="status-badge muted">Non renseigné</span>';
     return '<span class="status-badge method">' + paymentMethodLabel(m) + "</span>";
@@ -232,10 +239,18 @@
         if (!res.ok) { alert("Mise à jour du mode de paiement impossible."); loadRegistrations(); return; }
         var row = state.all.find(function (x) { return x.id === id; });
         if (row) row.payment_method = value;
+        // MAJ immédiate de la COULEUR DE LIGNE (toutes les cellules via la classe du <tr>)
+        var tr = sel.closest("tr");
+        if (tr) {
+          tr.classList.remove("payment-method-cash", "payment-method-transfer", "payment-method-unknown");
+          tr.classList.add(getPaymentRowClass(value));
+        }
         // MAJ du badge à côté du select (dans le tableau)
         var wrap = sel.closest(".method-cell") && sel.closest(".method-cell").querySelector(".method-badge-wrap");
         if (wrap) wrap.innerHTML = paymentMethodBadge(value);
         loadStats(); // rafraîchit les KPI modes de paiement
+        // Si un filtre "mode de paiement" est actif et que la ligne n'y correspond plus, recalcul propre
+        if (state.filter && state.filter.indexOf("method:") === 0) loadRegistrations();
       })
       .catch(function () { sel.disabled = false; alert("Serveur injoignable."); loadRegistrations(); });
   });
@@ -262,8 +277,7 @@
     $("regEmpty").hidden = state.all.length > 0;
     state.all.forEach(function (r) {
       var tr = document.createElement("tr");
-      tr.className = isElectronic(r.payment_method) ? "payment-method-transfer"
-        : (r.payment_method === "cash" ? "payment-method-cash" : "payment-method-unknown");
+      tr.className = getPaymentRowClass(r.payment_method);
       tr.innerHTML =
         "<td>" + esc(r.last_name) + "</td>" +
         "<td>" + esc(r.first_name) + "</td>" +

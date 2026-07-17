@@ -1477,3 +1477,27 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .admin-tabs{gap:6px}
   .admin-tab{flex:1 1 auto;padding:11px 14px;text-align:center;font-size:.9rem}
 }
+
+/* ===== Code couleur des lignes selon le mode de paiement (écran) ===== */
+/* Cible toutes les cellules pour neutraliser le fond transparent + le hover global. */
+.admin-table tbody tr.payment-method-cash > td{
+  background-color:rgba(120,24,35,.34)!important;color:#fff5f5!important;
+  border-top:1px solid rgba(255,95,110,.28);border-bottom:1px solid rgba(255,95,110,.28);
+}
+.admin-table tbody tr.payment-method-transfer > td{
+  background-color:rgba(20,105,63,.34)!important;color:#f2fff7!important;
+  border-top:1px solid rgba(73,220,137,.28);border-bottom:1px solid rgba(73,220,137,.28);
+}
+.admin-table tbody tr.payment-method-unknown > td{background-color:transparent}
+/* Hover : plus soutenu, jamais de retour au fond noir */
+.admin-table tbody tr.payment-method-cash:hover > td{background-color:rgba(145,29,42,.45)!important}
+.admin-table tbody tr.payment-method-transfer:hover > td{background-color:rgba(24,125,73,.45)!important}
+/* Lisibilité des éléments internes sur fond coloré */
+.admin-table tr.payment-method-cash .payment-method-select,
+.admin-table tr.payment-method-transfer .payment-method-select{
+  background-color:#081016;color:#fff;border-color:rgba(130,215,235,.5)
+}
+.admin-table tr.payment-method-cash .pay-text,
+.admin-table tr.payment-method-transfer .pay-text,
+.admin-table tr.payment-method-cash .mail-when,
+.admin-table tr.payment-method-transfer .mail-when{color:inherit}
