@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -99,6 +100,15 @@
       </div>
     </section>
 
+    <!-- Navigation principale Admin -->
+    <div class="container">
+      <div class="admin-tabs admin-nav-primary no-print" role="tablist" aria-label="Espaces Admin">
+        <button class="admin-tab primary-tab active" data-view="inscrits" role="tab" aria-selected="true">Joueurs inscrits</button>
+        <button class="admin-tab primary-tab" data-view="rosters" role="tab" aria-selected="false">Rosters Summer League 2026</button>
+      </div>
+    </div>
+
+    <div id="viewInscrits">
     <section class="section" style="padding-top:10px">
       <div class="container">
         <!-- Onglets catégorie -->
@@ -145,6 +155,7 @@
 
         <div class="admin-topbar no-print" style="justify-content:flex-start;margin-bottom:14px">
           <button class="btn btn--ghost btn--sm" id="btnExportPdf">Exporter PDF</button>
+          <button class="btn btn--ghost btn--sm" id="btnExportWord">Exporter Word</button>
           <button class="btn btn--ghost btn--sm" id="btnPrint">Imprimer la liste</button>
           <button class="btn btn--ghost btn--sm" id="btnMailFiltered">Envoyer un mail au filtre affiché</button>
         </div>
@@ -214,6 +225,51 @@
         </div>
       </div>
     </section>
+    </div><!-- /viewInscrits -->
+
+    <!-- ============ VUE ROSTERS SUMMER LEAGUE 2026 ============ -->
+    <div id="viewRosters" hidden>
+    <section class="section" style="padding-top:10px">
+      <div class="container">
+        <!-- Sous-onglets roster -->
+        <div class="admin-tabs no-print" role="tablist" aria-label="Roster">
+          <button class="admin-tab roster-tab active" data-roster="seniors" role="tab" aria-selected="true">Roster Seniors</button>
+          <button class="admin-tab roster-tab" data-roster="u23" role="tab" aria-selected="false">Roster U23</button>
+        </div>
+
+        <!-- En-tête roster (visible à l'impression) -->
+        <div class="roster-head" id="rosterHead">
+          <img class="roster-logo" src="assets/logo/logo-tophoops.png" alt="Top Hoops">
+          <h2 class="roster-title" id="rosterTitle">ROSTER SUMMER LEAGUE 2026</h2>
+          <p class="roster-meta" id="rosterMeta"></p>
+          <p class="roster-count" id="rosterCount">Nombre de joueurs : —</p>
+          <div class="roster-legend">
+            <span><i class="lg lg-green"></i> Vert : virement, PayPal ou Revolut</span>
+            <span><i class="lg lg-red"></i> Rouge : espèces</span>
+            <span><i class="lg lg-grey"></i> Gris : mode non renseigné</span>
+          </div>
+        </div>
+
+        <div class="roster-alert" id="rosterAlert" hidden></div>
+
+        <div class="admin-topbar no-print" style="justify-content:flex-start;margin:6px 0 14px">
+          <button class="btn btn--ghost btn--sm" id="btnRosterPdf">Exporter PDF</button>
+          <button class="btn btn--ghost btn--sm" id="btnRosterWord">Exporter Word</button>
+          <button class="btn btn--ghost btn--sm" id="btnRosterPrint">Imprimer le roster</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table roster-table" id="rosterTable">
+            <thead>
+              <tr><th>Nom</th><th>Prénom</th><th>Poste</th><th>Âge</th><th>Taille</th></tr>
+            </thead>
+            <tbody id="rosterTbody"></tbody>
+          </table>
+          <div class="admin-empty" id="rosterEmpty" hidden>Aucun joueur Summer League dans cette catégorie.</div>
+        </div>
+      </div>
+    </section>
+    </div><!-- /viewRosters -->
   </div>
 
   <!-- ============ MODALES ============ -->

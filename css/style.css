@@ -1501,3 +1501,25 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .admin-table tr.payment-method-transfer .pay-text,
 .admin-table tr.payment-method-cash .mail-when,
 .admin-table tr.payment-method-transfer .mail-when{color:inherit}
+
+/* ===== Vue Rosters Summer League 2026 ===== */
+.admin-nav-primary{margin-bottom:22px}
+.admin-nav-primary .primary-tab{padding:12px 28px}
+.roster-head{text-align:center;margin:6px 0 14px;padding:20px;border:1px solid rgba(133,218,237,.2);border-radius:16px;background:linear-gradient(135deg,rgba(133,218,237,.06),rgba(6,8,11,.4))}
+.roster-logo{width:60px;height:60px;border-radius:50%;box-shadow:0 0 22px var(--glow);margin-bottom:8px}
+.roster-title{font-size:clamp(1.3rem,4vw,1.9rem);letter-spacing:.02em;margin:0 0 6px}
+.roster-meta{color:var(--text-muted);font-size:.85rem;margin:0 0 6px}
+.roster-count{color:var(--cyan-main);font-weight:800;font-size:1rem;margin:0 0 12px}
+.roster-legend{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:center;font-size:.82rem;color:var(--text-muted)}
+.roster-legend .lg{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.15)}
+.roster-legend .lg-green{background:#d7f5de}
+.roster-legend .lg-red{background:#ffdcdc}
+.roster-legend .lg-grey{background:#ebeef2}
+.roster-alert{background:rgba(240,200,90,.12);border:1px solid rgba(240,200,90,.4);color:#f2d27a;border-radius:10px;padding:10px 14px;font-size:.85rem;margin-bottom:12px}
+.roster-table{min-width:520px}
+@media print{
+  .site-header{display:none !important}
+  .roster-head{border-color:#999 !important;background:#fff !important}
+  .roster-title,.roster-count,.roster-meta{color:#000 !important}
+  .roster-legend{color:#000 !important}
+}

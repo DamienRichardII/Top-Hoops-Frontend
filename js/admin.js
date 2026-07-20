@@ -744,6 +744,283 @@
     URL.revokeObjectURL(url);
   });
 
+  /* ---------- EXPORT WORD (.docx réel via JSZip) ---------- */
+  function xmlEsc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[c]);
+    });
+  }
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  // Groupe de couleur docx à partir de la classe de ligne (même logique que l'écran/PDF)
+  var DOCX_COLORS = {
+    green: { fill: "D7F5DE", color: "0F4623" },
+    red: { fill: "FFDCDC", color: "691414" },
+    grey: { fill: "EBEEF2", color: "282D32" }
+  };
+  function docxGroup(method) {
+    var c = getPaymentRowClass(method);
+    return c === "payment-method-cash" ? "red" : (c === "payment-method-transfer" ? "green" : "grey");
+  }
+  function docxCell(text, fill, color, bold, widthTwips) {
+    return '<w:tc><w:tcPr>' +
+      (widthTwips ? '<w:tcW w:w="' + widthTwips + '" w:type="dxa"/>' : '') +
+      '<w:shd w:val="clear" w:color="auto" w:fill="' + fill + '"/></w:tcPr>' +
+      '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr><w:r><w:rPr>' + (bold ? '<w:b/>' : '') +
+      '<w:color w:val="' + color + '"/><w:sz w:val="20"/></w:rPr>' +
+      '<w:t xml:space="preserve">' + xmlEsc(text) + '</w:t></w:r></w:p></w:tc>';
+  }
+  function docxPara(text, opts) {
+    opts = opts || {};
+    return '<w:p><w:pPr>' + (opts.align ? '<w:jc w:val="' + opts.align + '"/>' : '') +
+      '<w:spacing w:after="' + (opts.after != null ? opts.after : 120) + '"/></w:pPr>' +
+      '<w:r><w:rPr>' + (opts.bold ? '<w:b/>' : '') + (opts.color ? '<w:color w:val="' + opts.color + '"/>' : '') +
+      '<w:sz w:val="' + (opts.sz || 22) + '"/></w:rPr><w:t xml:space="preserve">' + xmlEsc(text) + '</w:t></w:r></w:p>';
+  }
+  // config: { title, subtitle:[lignes], columns:[noms], rows:[{cells:[...], method}], filename, orientation }
+  function exportListToWord(config) {
+    if (!window.JSZip) { alert("Librairie Word (JSZip) non chargee."); return; }
+    var cols = config.columns, n = cols.length;
+    var totalW = config.orientation === "landscape" ? 15200 : 9600;
+    var colW = Math.floor(totalW / n);
+    var b = '<w:tblBorders>' +
+      '<w:top w:val="single" w:sz="4" w:color="B4BEC8"/><w:bottom w:val="single" w:sz="4" w:color="B4BEC8"/>' +
+      '<w:left w:val="single" w:sz="4" w:color="B4BEC8"/><w:right w:val="single" w:sz="4" w:color="B4BEC8"/>' +
+      '<w:insideH w:val="single" w:sz="4" w:color="B4BEC8"/><w:insideV w:val="single" w:sz="4" w:color="B4BEC8"/></w:tblBorders>';
+
+    var headRow = '<w:tr>' + cols.map(function (c) { return docxCell(c, "06080B", "FAFAFA", true, colW); }).join("") + '</w:tr>';
+    var dataRows = config.rows.map(function (row) {
+      var g = DOCX_COLORS[docxGroup(row.method)];
+      return '<w:tr>' + row.cells.map(function (cell) { return docxCell(cell, g.fill, g.color, false, colW); }).join("") + '</w:tr>';
+    }).join("");
+
+    var grid = '<w:tblGrid>' + cols.map(function () { return '<w:gridCol w:w="' + colW + '"/>'; }).join("") + '</w:tblGrid>';
+    var table = '<w:tbl><w:tblPr><w:tblW w:w="' + totalW + '" w:type="dxa"/>' + b + '</w:tblPr>' + grid + headRow + dataRows + '</w:tbl>';
+
+    var header = docxPara("TOP HOOPS", { bold: true, sz: 30, color: "0E7C93", align: "center", after: 40 }) +
+      docxPara(config.title, { bold: true, sz: 32, align: "center", after: 80 }) +
+      config.subtitle.map(function (l) { return docxPara(l, { sz: 20, color: "555555", align: "center", after: 40 }); }).join("") +
+      docxPara("", { after: 80 });
+    var footer = docxPara("", { after: 120 }) +
+      docxPara("Top Hoops - Summer League 2026 - Document genere depuis l'espace Admin.", { sz: 16, color: "9AA9B5", align: "center", after: 0 });
+
+    var pg = config.orientation === "landscape"
+      ? '<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>'
+      : '<w:pgSz w:w="11906" w:h="16838"/>';
+    var sect = '<w:sectPr>' + pg + '<w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720"/></w:sectPr>';
+
+    var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
+      header + table + footer + sect + '</w:body></w:document>';
+
+    var CT = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+      '</Types>';
+    var RELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+      '</Relationships>';
+
+    var zip = new JSZip();
+    zip.file("[Content_Types].xml", CT);
+    zip.folder("_rels").file(".rels", RELS);
+    zip.folder("word").file("document.xml", docXml);
+    zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" })
+      .then(function (blob) { downloadBlob(blob, config.filename + ".docx"); });
+  }
+
+  // Export Word de la LISTE COMPLÈTE (respecte onglet/filtres/recherche actifs)
+  $("btnExportWord").addEventListener("click", function () {
+    var METHOD_FR = { cash: "Especes", bank_transfer: "Virement bancaire", paypal: "PayPal", revolut: "Revolut" };
+    var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
+    var sorted = sortByPaymentMethod(state.all);
+    var rows = sorted.map(function (r) {
+      return { method: r.payment_method, cells: [
+        r.last_name || "-", r.first_name || "-", (r.age != null && r.age !== "" ? String(r.age) : "Non renseigne"),
+        r.position || "Non renseigne", r.level || "Non renseigne", STATUS_FR[r.status] || "En attente",
+        METHOD_FR[r.payment_method] || "Non renseigne", r.payment_received ? "Paye" : "Non paye",
+        r.mail_sent ? "Oui" : "Non"
+      ] };
+    });
+    exportListToWord({
+      title: "LISTE DES JOUEURS INSCRITS - " + (state.category === "u23" ? "U23" : "SENIORS"),
+      subtitle: ["Categorie : " + (state.category === "u23" ? "U23" : "Seniors"), "Date d'export : " + new Date().toLocaleDateString("fr-FR"), "Nombre de joueurs : " + rows.length],
+      columns: ["Nom", "Prenom", "Age", "Poste", "Niveau", "Statut", "Mode de paiement", "Paiement recu", "Mail envoye"],
+      rows: rows, filename: "top-hoops-liste-joueurs-" + state.category, orientation: "landscape"
+    });
+  });
+
+  /* ---------- ROSTERS SUMMER LEAGUE 2026 ---------- */
+  var rosterState = { category: "seniors", all: [] };
+
+  // Catégorie d'âge (unique) : 23 et moins = U23, 24 et plus = Seniors, sinon inconnu
+  function getPlayerCategory(age) {
+    var n = Number(age);
+    if (age === null || age === "" || !isFinite(n)) return "unknown";
+    return n <= 23 ? "u23" : "senior";
+  }
+  // Format taille homogène : 182 -> "1,82 m", vide -> "Non renseignée"
+  function formatHeight(h) {
+    if (h == null || String(h).trim() === "") return "Non renseignée";
+    var s = String(h).replace(",", ".").replace(/[^\d.]/g, "");
+    var n = parseFloat(s);
+    if (!isFinite(n) || n <= 0) return "Non renseignée";
+    if (n > 3) n = n / 100;
+    return n.toFixed(2).replace(".", ",") + " m";
+  }
+  function rosterConfig() {
+    var isU23 = rosterState.category === "u23";
+    return {
+      title: isU23 ? "ROSTER U23 SUMMER LEAGUE 2026" : "ROSTER SUMMER LEAGUE 2026",
+      filename: isU23 ? "roster-u23-summer-league-2026" : "roster-summer-league-2026"
+    };
+  }
+  function getRosterPlayers() {
+    var cat = rosterState.category; // seniors | u23
+    return sortByPaymentMethod(rosterState.all.filter(function (r) {
+      var c = getPlayerCategory(r.age);
+      return cat === "u23" ? c === "u23" : c === "senior";
+    }));
+  }
+  function loadRosters() {
+    // Summer League uniquement (valeur technique event_type)
+    api("/api/admin/registrations?event=summerleague").then(function (r) {
+      if (r.status === 401) { setToken(null); showLogin(); return; }
+      rosterState.all = (r.data && r.data.registrations) || [];
+      renderRoster();
+    });
+  }
+  function renderRoster() {
+    var cfg = rosterConfig();
+    var players = getRosterPlayers();
+    $("rosterTitle").textContent = cfg.title;
+    $("rosterMeta").textContent = "Date d'export : " + new Date().toLocaleDateString("fr-FR") +
+      "   •   Début de l'événement : 22/07/2026 à 17h00";
+    $("rosterCount").textContent = "Nombre de joueurs : " + players.length;
+
+    // Alerte données incomplètes (n'empêche pas l'export)
+    var noHeight = players.filter(function (p) { return !p.height || String(p.height).trim() === ""; }).length;
+    var noPos = players.filter(function (p) { return !p.position; }).length;
+    var noMethod = players.filter(function (p) { return !p.payment_method; }).length;
+    var unknownAge = rosterState.all.filter(function (p) { return getPlayerCategory(p.age) === "unknown"; }).length;
+    var msgs = [];
+    if (noHeight) msgs.push(noHeight + " joueur(s) sans taille");
+    if (noPos) msgs.push(noPos + " sans poste");
+    if (noMethod) msgs.push(noMethod + " sans mode de paiement");
+    if (unknownAge) msgs.push(unknownAge + " sans âge valide (non classé)");
+    var al = $("rosterAlert");
+    if (msgs.length) { al.hidden = false; al.textContent = "Attention : " + msgs.join(", ") + "."; }
+    else { al.hidden = true; al.textContent = ""; }
+
+    var tbody = $("rosterTbody");
+    tbody.innerHTML = "";
+    $("rosterEmpty").hidden = players.length > 0;
+    players.forEach(function (p) {
+      var tr = document.createElement("tr");
+      tr.className = getPaymentRowClass(p.payment_method);
+      tr.innerHTML =
+        "<td>" + esc(p.last_name || "-") + "</td>" +
+        "<td>" + esc(p.first_name || "-") + "</td>" +
+        "<td>" + esc(p.position || "Non renseigné") + "</td>" +
+        "<td>" + esc(p.age != null && p.age !== "" ? p.age : "Non renseigné") + "</td>" +
+        "<td>" + esc(formatHeight(p.height)) + "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+
+  // PDF roster : A4 portrait, 5 colonnes, groupes colorés + légende
+  function exportRosterPdf() {
+    if (!window.jspdf) { alert("Librairie PDF non chargee."); return; }
+    var cfg = rosterConfig();
+    var players = getRosterPlayers();
+    var doc = new window.jspdf.jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    var M = 14;
+    doc.setTextColor(6, 8, 11); doc.setFont(undefined, "bold"); doc.setFontSize(15);
+    doc.text(cfg.title, 105, 16, { align: "center" });
+    doc.setFont(undefined, "normal"); doc.setFontSize(10); doc.setTextColor(90);
+    doc.text("Date d'export : " + new Date().toLocaleDateString("fr-FR"), 105, 22, { align: "center" });
+    doc.text("Debut de l'evenement : 22/07/2026 a 17h00", 105, 27, { align: "center" });
+    doc.setFont(undefined, "bold"); doc.text("Nombre de joueurs : " + players.length, 105, 32.5, { align: "center" });
+    doc.setFont(undefined, "normal");
+    var lx = M, ly = 40;
+    [[[215,245,222],"Vert : virement / PayPal / Revolut"],[[255,220,220],"Rouge : especes"],[[235,238,242],"Gris : non renseigne"]].forEach(function (it) {
+      doc.setFillColor(it[0][0], it[0][1], it[0][2]); doc.setDrawColor(150); doc.rect(lx, ly - 3.2, 4, 4, "FD");
+      doc.setTextColor(40); doc.setFontSize(8.5); doc.text(it[1], lx + 6, ly); lx += doc.getTextWidth(it[1]) + 12;
+    });
+    var head = [["Nom", "Prenom", "Poste", "Age", "Taille"]];
+    var startY = 45;
+    PDF_GROUPS.forEach(function (g) {
+      var gp = players.filter(function (r) { return g.match(r.payment_method); });
+      if (!gp.length) return;
+      doc.setFillColor(g.bar[0], g.bar[1], g.bar[2]); doc.rect(M, startY, 182, 7, "F");
+      doc.setTextColor(255, 255, 255); doc.setFont(undefined, "bold"); doc.setFontSize(10);
+      doc.text(g.title + "  (" + gp.length + ")", M + 3, startY + 4.8); doc.setFont(undefined, "normal");
+      var body = gp.map(function (r) {
+        return [r.last_name || "-", r.first_name || "-", r.position || "Non renseigne",
+                (r.age != null && r.age !== "" ? String(r.age) : "Non renseigne"), formatHeight(r.height)];
+      });
+      doc.autoTable({
+        head: head, body: body, startY: startY + 7, theme: "grid",
+        styles: { fontSize: 9.5, cellPadding: 2.8, textColor: g.text, lineColor: [180, 190, 200], lineWidth: 0.2, valign: "middle" },
+        headStyles: { fillColor: [6, 8, 11], textColor: [250, 250, 250], fontStyle: "bold" },
+        bodyStyles: { fillColor: g.fill, textColor: g.text }, margin: { left: M, right: M }
+      });
+      startY = doc.lastAutoTable.finalY + 6;
+    });
+    if (!players.length) { doc.setTextColor(90); doc.text("Aucun joueur.", M, startY + 4); }
+    doc.save(cfg.filename + ".pdf");
+  }
+
+  function exportRosterWord() {
+    var cfg = rosterConfig();
+    var players = getRosterPlayers();
+    var rows = players.map(function (r) {
+      return { method: r.payment_method, cells: [
+        r.last_name || "-", r.first_name || "-", r.position || "Non renseigne",
+        (r.age != null && r.age !== "" ? String(r.age) : "Non renseigne"), formatHeight(r.height)
+      ] };
+    });
+    exportListToWord({
+      title: cfg.title,
+      subtitle: ["Date d'export : " + new Date().toLocaleDateString("fr-FR"),
+                 "Début de l'événement : 22/07/2026 à 17h00", "Nombre de joueurs : " + rows.length],
+      columns: ["Nom", "Prénom", "Poste", "Âge", "Taille"],
+      rows: rows, filename: cfg.filename, orientation: "portrait"
+    });
+  }
+
+  // Navigation principale (Joueurs inscrits / Rosters)
+  document.querySelectorAll(".primary-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".primary-tab").forEach(function (t) { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
+      tab.classList.add("active"); tab.setAttribute("aria-selected", "true");
+      var v = tab.getAttribute("data-view");
+      $("viewInscrits").hidden = v !== "inscrits";
+      $("viewRosters").hidden = v !== "rosters";
+      if (v === "rosters") loadRosters();
+    });
+  });
+  // Sous-onglets roster (Seniors / U23)
+  document.querySelectorAll(".roster-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".roster-tab").forEach(function (t) { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
+      tab.classList.add("active"); tab.setAttribute("aria-selected", "true");
+      rosterState.category = tab.getAttribute("data-roster");
+      renderRoster();
+    });
+  });
+  $("btnRosterPdf").addEventListener("click", exportRosterPdf);
+  $("btnRosterWord").addEventListener("click", exportRosterWord);
+  $("btnRosterPrint").addEventListener("click", function () { window.print(); });
+
   /* ---------- INIT ---------- */
   (function init() {
     initPasswordToggles();
