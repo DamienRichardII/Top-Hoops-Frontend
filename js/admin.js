@@ -858,6 +858,125 @@
     });
   });
 
+  /* ---------- EXPORT EXCEL (.xlsx réel via JSZip) ---------- */
+  function colLetter(i) { var s = ""; i++; while (i > 0) { var m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
+  // Index de style xlsx par groupe de couleur (cf. styles.xml : 2=vert, 3=rouge, 4=gris)
+  function xlsxStyleForGroup(g) { return g === "green" ? 2 : (g === "red" ? 3 : 4); }
+
+  // config: { title, subtitle:[lignes], columns:[noms], rows:[{cells:[...], method}], filename, sheetName }
+  function exportListToExcel(config) {
+    if (!window.JSZip) { alert("Librairie Excel (JSZip) non chargee."); return; }
+    var rowsXml = "", rn = 0;
+    function addRow(cells) {
+      rn++;
+      var cx = cells.map(function (c, ci) {
+        return '<c r="' + colLetter(ci) + rn + '" t="inlineStr" s="' + c.s + '"><is><t xml:space="preserve">' + xmlEsc(c.v) + '</t></is></c>';
+      }).join("");
+      rowsXml += '<row r="' + rn + '">' + cx + '</row>';
+    }
+    addRow([{ v: config.title, s: 5 }]);
+    config.subtitle.forEach(function (l) { addRow([{ v: l, s: 0 }]); });
+    addRow([{ v: "", s: 0 }]);
+    addRow(config.columns.map(function (c) { return { v: c, s: 1 }; }));
+    config.rows.forEach(function (r) {
+      var gi = xlsxStyleForGroup(docxGroup(r.method));
+      addRow(r.cells.map(function (c) { return { v: c, s: gi }; }));
+    });
+
+    // Largeurs de colonnes agréables
+    var colsXml = '<cols>' + config.columns.map(function (_, i) {
+      return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="20" customWidth="1"/>';
+    }).join("") + '</cols>';
+
+    var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      colsXml + '<sheetData>' + rowsXml + '</sheetData></worksheet>';
+
+    var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<fonts count="6">' +
+      '<font><sz val="11"/><color theme="1"/><name val="Calibri"/></font>' +
+      '<font><b/><sz val="11"/><color rgb="FFFAFAFA"/><name val="Calibri"/></font>' +
+      '<font><sz val="11"/><color rgb="FF0F4623"/><name val="Calibri"/></font>' +
+      '<font><sz val="11"/><color rgb="FF691414"/><name val="Calibri"/></font>' +
+      '<font><sz val="11"/><color rgb="FF282D32"/><name val="Calibri"/></font>' +
+      '<font><b/><sz val="14"/><color rgb="FF06080B"/><name val="Calibri"/></font>' +
+      '</fonts>' +
+      '<fills count="6">' +
+      '<fill><patternFill patternType="none"/></fill>' +
+      '<fill><patternFill patternType="gray125"/></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FF06080B"/><bgColor indexed="64"/></patternFill></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FFD7F5DE"/><bgColor indexed="64"/></patternFill></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FFFFDCDC"/><bgColor indexed="64"/></patternFill></fill>' +
+      '<fill><patternFill patternType="solid"><fgColor rgb="FFEBEEF2"/><bgColor indexed="64"/></patternFill></fill>' +
+      '</fills>' +
+      '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+      '<cellXfs count="6">' +
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+      '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
+      '<xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
+      '<xf numFmtId="0" fontId="3" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
+      '<xf numFmtId="0" fontId="4" fillId="5" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
+      '<xf numFmtId="0" fontId="5" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+      '</cellXfs>' +
+      '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+      '</styleSheet>';
+
+    var workbook = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<sheets><sheet name="' + xmlEsc((config.sheetName || "Liste").slice(0, 31)) + '" sheetId="1" r:id="rId1"/></sheets></workbook>';
+    var wbRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+      '</Relationships>';
+    var CT = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      '</Types>';
+    var RELS = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+      '</Relationships>';
+
+    var zip = new JSZip();
+    zip.file("[Content_Types].xml", CT);
+    zip.folder("_rels").file(".rels", RELS);
+    var xl = zip.folder("xl");
+    xl.file("workbook.xml", workbook);
+    xl.folder("_rels").file("workbook.xml.rels", wbRels);
+    xl.file("styles.xml", styles);
+    xl.folder("worksheets").file("sheet1.xml", sheet);
+    zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
+      .then(function (blob) { downloadBlob(blob, config.filename + ".xlsx"); });
+  }
+
+  // Export Excel de la LISTE COMPLÈTE (respecte onglet/filtres/recherche actifs)
+  $("btnExportExcel").addEventListener("click", function () {
+    var METHOD_FR = { cash: "Especes", bank_transfer: "Virement bancaire", paypal: "PayPal", revolut: "Revolut" };
+    var STATUS_FR = { confirmed: "Confirme", rejected: "Refuse", pending: "En attente" };
+    var sorted = sortByPaymentMethod(state.all);
+    var rows = sorted.map(function (r) {
+      return { method: r.payment_method, cells: [
+        r.last_name || "-", r.first_name || "-", (r.age != null && r.age !== "" ? String(r.age) : "Non renseigne"),
+        r.position || "Non renseigne", r.level || "Non renseigne", STATUS_FR[r.status] || "En attente",
+        METHOD_FR[r.payment_method] || "Non renseigne", r.payment_received ? "Paye" : "Non paye",
+        r.mail_sent ? "Oui" : "Non"
+      ] };
+    });
+    exportListToExcel({
+      title: "LISTE DES JOUEURS INSCRITS - " + (state.category === "u23" ? "U23" : "SENIORS"),
+      subtitle: ["Categorie : " + (state.category === "u23" ? "U23" : "Seniors"), "Date d'export : " + new Date().toLocaleDateString("fr-FR"), "Nombre de joueurs : " + rows.length],
+      columns: ["Nom", "Prenom", "Age", "Poste", "Niveau", "Statut", "Mode de paiement", "Paiement recu", "Mail envoye"],
+      rows: rows, filename: "top-hoops-liste-joueurs-" + state.category, sheetName: "Joueurs"
+    });
+  });
+
   /* ---------- ROSTERS SUMMER LEAGUE 2026 ---------- */
   var rosterState = { category: "seniors", all: [] };
 
@@ -1017,8 +1136,27 @@
       renderRoster();
     });
   });
+  function exportRosterExcel() {
+    var cfg = rosterConfig();
+    var players = getRosterPlayers();
+    var rows = players.map(function (r) {
+      return { method: r.payment_method, cells: [
+        r.last_name || "-", r.first_name || "-", r.position || "Non renseigne",
+        (r.age != null && r.age !== "" ? String(r.age) : "Non renseigne"), formatHeight(r.height)
+      ] };
+    });
+    exportListToExcel({
+      title: cfg.title,
+      subtitle: ["Date d'export : " + new Date().toLocaleDateString("fr-FR"),
+                 "Debut de l'evenement : 22/07/2026 a 17h00", "Nombre de joueurs : " + rows.length],
+      columns: ["Nom", "Prenom", "Poste", "Age", "Taille"],
+      rows: rows, filename: cfg.filename, sheetName: rosterState.category === "u23" ? "Roster U23" : "Roster Seniors"
+    });
+  }
+
   $("btnRosterPdf").addEventListener("click", exportRosterPdf);
   $("btnRosterWord").addEventListener("click", exportRosterWord);
+  $("btnRosterExcel").addEventListener("click", exportRosterExcel);
   $("btnRosterPrint").addEventListener("click", function () { window.print(); });
 
   /* ---------- INIT ---------- */
