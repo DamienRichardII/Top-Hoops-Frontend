@@ -97,106 +97,16 @@
       <div class="section-head reveal">
         <span class="eyebrow">Inscription</span>
         <h1 class="hero-title" style="font-size:clamp(2.2rem,6vw,3.6rem)">Rejoins <span class="text-cyan">Top Hoops</span></h1>
-        <p class="section-sub">Choisis ton parcours : la Summer League estivale ou la Ligue Top Hoops 1V1.</p>
+        <p class="section-sub">Inscris-toi à la Ligue Top Hoops, le format 1 contre 1.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ CHOIX DU PARCOURS ============ -->
+  <!-- ============ FORMULAIRE INSCRIPTION LIGUE 1V1 ============ -->
   <section class="section" style="padding-top:6px">
     <div class="container" style="max-width:900px">
-      <div class="reg-choice reveal">
-        <button type="button" class="reg-card" data-reg="summer">
-          <span class="reg-ico"><svg class="icon-cyan" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg></span>
-          <h3>Je m'inscris à la Summer League</h3>
-          <p>Tournoi estival, compétition, visibilité et contenu.</p>
-        </button>
-        <button type="button" class="reg-card" data-reg="ligue">
-          <span class="reg-ico"><svg class="icon-cyan" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1.2 2.8 4 4.2 4 7.8a4 4 0 1 1-8 0c0-1.4.5-2.4 1-3 .2 1 .8 1.6 1.6 1.8C10 8 11 5.5 12 3z"/></svg></span>
-          <h3>Je m'inscris à la Ligue Top Hoops</h3>
-          <p>Le format 1 contre 1 : duels directs et match-ups annoncés.</p>
-        </button>
-      </div>
-
-      <!-- ===== Formulaire SUMMER LEAGUE ===== -->
-      <div class="reg-form" id="form-summer" hidden>
-        <div class="section-head left reveal" style="margin-bottom:20px">
-          <span class="eyebrow">Summer League</span>
-          <h2 class="section-title" style="font-size:1.5rem">Formulaire Summer League</h2>
-        </div>
-        <div class="reg-recap reveal">
-          <h3>Summer League Top Hoops</h3>
-          <ul>
-            <li>Du 22 au 25 Juillet</li>
-            <li>Gymnase Diderot — Paris 14e</li>
-            <li>Matchs à 16H30 et 18H00</li>
-            <li>Frais d'inscription : 20€</li>
-          </ul>
-        </div>
-        <form class="form-wrap"
-              data-api="registrations"
-              data-event-type="summerleague"
-              data-success="Merci, ton inscription a bien été envoyée à Top Hoops.">
-          <div class="form-grid">
-            <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" name="prenom" data-label="Prénom" required></div>
-            <div class="field"><label>Nom <span class="req">*</span></label><input type="text" name="nom" data-label="Nom" required></div>
-            <div class="field"><label>Âge <span class="req">*</span></label><input type="number" name="age" data-label="Âge" min="10" max="70" required></div>
-            <div class="field"><label>Email <span class="req">*</span></label><input type="email" name="email" data-label="Email" required></div>
-            <div class="field"><label>Téléphone <span class="req">*</span></label><input type="tel" name="telephone" data-label="Téléphone" required></div>
-            <div class="field">
-              <label>Poste <span class="req">*</span></label>
-              <select name="poste" data-label="Poste" required>
-                <option value="" disabled selected>Choisir un poste</option>
-                <option>Meneur</option><option>Arrière</option><option>Ailier</option>
-                <option>Ailier fort</option><option>Pivot</option><option>Polyvalent</option>
-              </select>
-            </div>
-            <div class="field"><label>Taille (cm)</label><input type="number" name="taille" data-label="Taille (cm)" min="140" max="240"></div>
-            <div class="field">
-              <label>Taille de maillot</label>
-              <select name="taille_maillot" data-label="Taille de maillot">
-                <option value="" disabled selected>Choisir une taille</option>
-                <option>XS</option><option>S</option><option>M</option>
-                <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Taille de short</label>
-              <select name="taille_short" data-label="Taille de short">
-                <option value="" disabled selected>Choisir une taille</option>
-                <option>XS</option><option>S</option><option>M</option>
-                <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Niveau <span class="req">*</span></label>
-              <select name="niveau" data-label="Niveau" required>
-                <option value="" disabled selected>Choisir un niveau</option>
-                <option>Loisir</option><option>Club</option><option>Régional</option>
-                <option>National</option><option>Semi-pro</option><option>Pro</option>
-              </select>
-            </div>
-            <div class="field"><label>Instagram</label><input type="text" name="instagram" data-label="Instagram" placeholder="@pseudo"></div>
-            <div class="field full">
-              <label class="form-label" style="font-weight:600;display:block;margin-bottom:4px">Tu acceptes de payer les 20€ de frais d'inscription ? <span class="req">*</span></label>
-              <div class="radio-choice-row">
-                <label class="radio-choice"><input type="radio" name="registration_fee_accepted" value="Oui" data-label="Frais d'inscription 20€ acceptés" required><span>Oui</span></label>
-                <label class="radio-choice"><input type="radio" name="registration_fee_accepted" value="Non" data-label="Frais d'inscription 20€ acceptés" required><span>Non</span></label>
-              </div>
-            </div>            <div class="field full">
-              <label class="check">
-                <input type="checkbox" name="consentement" data-label="Consentement contact" required>
-                <span>J'accepte d'être contacté par Top Hoops concernant mon inscription. <span class="req">*</span></span>
-              </label>
-            </div>
-          </div>
-          <button type="submit" class="btn btn--primary btn--block" style="margin-top:20px">Envoyer mon inscription Summer League</button>
-          <div class="form-feedback" role="status"></div>
-        </form>
-      </div>
-
       <!-- ===== Formulaire LIGUE TOP HOOPS 1V1 ===== -->
-      <div class="reg-form" id="form-ligue" hidden>
+      <div class="reg-form" id="form-ligue">
         <div class="section-head left reveal" style="margin-bottom:20px">
           <span class="eyebrow">Ligue Top Hoops 1V1</span>
           <h2 class="section-title" style="font-size:1.5rem">Formulaire Ligue Top Hoops</h2>
