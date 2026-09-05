@@ -218,7 +218,13 @@
     { src: "assets/DSC03742.jpg", category: "matchs", alt: "Sous le panier Top Hoops" },
     { src: "assets/DSC03745.jpg", category: "backstage", alt: "Coulisses et preparation Top Hoops" },
     { src: "assets/champion-summerleague.jpeg", category: "events", alt: "Champions Summer League 2K25 Top Hoops" },
-    { src: "assets/champion-summerleague-U21.jpeg", category: "events", alt: "Champions U21 Summer League Top Hoops" }
+    { src: "assets/champion-summerleague-U21.jpeg", category: "events", alt: "Champions U21 Summer League Top Hoops" },
+    { src: "assets/images/ligue-gallery/ligue-01.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" },
+    { src: "assets/images/ligue-gallery/ligue-02.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" },
+    { src: "assets/images/ligue-gallery/ligue-03.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" },
+    { src: "assets/images/ligue-gallery/ligue-04.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" },
+    { src: "assets/images/ligue-gallery/ligue-05.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" },
+    { src: "assets/images/ligue-gallery/ligue-06.jpeg", category: "matchs", alt: "Ligue Top Hoops 1V1" }
   ];
 
   var galleryGrid = document.getElementById("galleryGrid");

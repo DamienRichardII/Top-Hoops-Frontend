@@ -1523,3 +1523,25 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
   .roster-title,.roster-count,.roster-meta{color:#000 !important}
   .roster-legend{color:#000 !important}
 }
+
+/* ===== Hero accueil recentré (logo dominant + titre + CTA) ===== */
+.hero--league .hero-center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:24px 0;position:relative;z-index:2}
+.hero-logo{width:clamp(160px,32vw,320px);height:auto;filter:drop-shadow(0 0 30px var(--glow))}
+.hero--league .hero-center .hero-title.hero-title--sm{margin:0;font-size:clamp(1.9rem,6vw,3.4rem);line-height:1.02}
+.hero--league .hero-center .hero-cta{justify-content:center;flex-wrap:wrap}
+@media(max-width:600px){
+  .hero--league .hero-center{gap:14px}
+  .hero-logo{width:clamp(130px,42vw,190px)}
+}
+
+/* ===== Bande photo défilante (galerie Ligue) ===== */
+.photo-rail{overflow:hidden;position:relative;padding:8px 0;margin-top:8px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.photo-rail-track{display:flex;gap:16px;width:max-content;animation:photoScroll 45s linear infinite}
+.photo-rail:hover .photo-rail-track{animation-play-state:paused}
+.photo-rail img{height:clamp(160px,26vw,240px);width:auto;border-radius:14px;object-fit:cover;border:1px solid rgba(133,218,237,.18);box-shadow:0 8px 24px rgba(0,0,0,.35);flex:0 0 auto}
+@keyframes photoScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.photo-rail-track{animation:none}.photo-rail{overflow-x:auto}}
+
+/* ===== Logo final (monogramme transparent) header/footer ===== */
+.brand img.logo-mark{width:auto;height:38px;border-radius:0}
+.footer-brand img.logo-mark{width:auto;height:44px;border-radius:0}
