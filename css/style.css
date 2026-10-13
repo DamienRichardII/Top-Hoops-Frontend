@@ -1047,6 +1047,16 @@ body > section { position: relative; z-index: 1; }
 .event-info-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); }
 .event-info-card strong { font-size: 1.02rem; color: var(--white); }
 
+/* ---------- NEXT UP (affiche + infos) ---------- */
+.next-up-layout { display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: 32px; align-items: center; }
+.next-up-flyer { display: block; border-radius: 24px; overflow: hidden; border: 1px solid rgba(133,218,237,0.28); box-shadow: 0 24px 80px rgba(0,0,0,0.42); transition: transform .25s ease; }
+.next-up-flyer:hover { transform: translateY(-4px); }
+.next-up-flyer img { display: block; width: 100%; height: auto; }
+.next-up-info { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+.next-up-info .event-info-grid { grid-template-columns: 1fr 1fr; width: 100%; }
+.next-up-tagline { font-weight: 700; font-size: 1.1rem; color: var(--white); margin: 0; }
+@media (max-width: 900px) { .next-up-layout { grid-template-columns: 1fr; } .next-up-flyer { max-width: 420px; margin: 0 auto; } }
+
 /* ---------- Match-up : affiche vedette ---------- */
 .matchup-card-featured {
   display: grid;
