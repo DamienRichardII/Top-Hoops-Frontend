@@ -284,7 +284,6 @@
         "<td>" + esc(r.age || "") + "</td>" +
         "<td>" + esc(r.position || "") + "</td>" +
         "<td>" + esc(r.level || "") + "</td>" +
-        "<td>" + esc(r.registration_fee_accepted || "-") + "</td>" +
         '<td><span class="tag-event">' + esc(EVENT_LABEL[r.event_type] || r.event_type) + "</span></td>" +
         "<td>" + regStatusBadge(r.status) + "</td>" +
         '<td class="method-col">' + paymentMethodSelectCell(r) + "</td>" +
@@ -397,7 +396,7 @@
       ["Nom", r.last_name], ["Prenom", r.first_name], ["Age", r.age], ["Email", r.email],
       ["Telephone", r.phone], ["Poste", r.position], ["Taille", r.height],
       ["Taille maillot", r.jersey_size], ["Taille short", r.short_size],
-      ["Niveau", r.level], ["Instagram", r.instagram], ["Frais 20\u20ac acceptes", r.registration_fee_accepted], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type]
+      ["Niveau", r.level], ["Instagram", r.instagram], ["Evenement", EVENT_LABEL[r.event_type] || r.event_type]
     ];
     var html = rows.map(function (p) {
       return '<div class="d-item"><span>' + p[0] + "</span><strong>" + esc(p[1] || "-") + "</strong></div>";
