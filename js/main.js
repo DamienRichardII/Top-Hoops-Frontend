@@ -442,4 +442,38 @@
     if (regType === "summer" || regType === "ligue") { showRegistrationForm(regType, false); }
   }
 
+  /* ---------- 10. BANNIÈRE COOKIES ---------- */
+  (function cookieBanner() {
+    var KEY = "topHoops_cookie_consent";
+    var choice;
+    try { choice = localStorage.getItem(KEY); } catch (e) { choice = null; }
+    if (choice === "accepted" || choice === "refused") return; // déjà répondu
+
+    function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+
+    var bar = document.createElement("div");
+    bar.className = "cookie-banner";
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "Gestion des cookies");
+    bar.innerHTML =
+      '<div class="cookie-inner">' +
+        '<p class="cookie-text">Ce site utilise des cookies pour améliorer ton expérience et mesurer l\'audience. ' +
+        'Tu peux accepter ou refuser leur utilisation.</p>' +
+        '<div class="cookie-actions">' +
+          '<button type="button" class="btn btn--ghost btn--sm" data-cookie="refused">Refuser</button>' +
+          '<button type="button" class="btn btn--primary btn--sm" data-cookie="accepted">Accepter</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(bar);
+    requestAnimationFrame(function () { bar.classList.add("show"); });
+
+    bar.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-cookie]");
+      if (!b) return;
+      save(b.getAttribute("data-cookie"));
+      bar.classList.remove("show");
+      setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 350);
+    });
+  })();
+
 })();
