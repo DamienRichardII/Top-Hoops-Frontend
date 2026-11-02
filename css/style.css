@@ -1562,7 +1562,21 @@ table.admin-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .cookie-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:space-between}
 .cookie-text{margin:0;color:#D7E1E7;font-size:.9rem;line-height:1.5;flex:1 1 420px}
 .cookie-actions{display:flex;gap:10px;flex:0 0 auto}
+.cookie-link{color:#85DAED;text-decoration:underline;font-weight:600}
+.cookie-link:hover{color:#fff}
 @media(max-width:620px){
   .cookie-inner{flex-direction:column;align-items:stretch;gap:12px}
   .cookie-actions{justify-content:flex-end}
 }
+
+/* ===== Pages légales (confidentialité) ===== */
+.legal-content{color:#D7E1E7;line-height:1.7;font-size:.98rem}
+.legal-content h2{color:#FAFAFA;font-size:1.25rem;text-transform:uppercase;letter-spacing:.01em;margin:30px 0 10px}
+.legal-content h2:first-of-type{margin-top:8px}
+.legal-content p{margin:0 0 14px}
+.legal-content ul{margin:0 0 16px;padding-left:20px}
+.legal-content li{margin:0 0 8px}
+.legal-content a{color:#85DAED;text-decoration:underline}
+.legal-content a:hover{color:#fff}
+.legal-content strong{color:#FAFAFA}
+.legal-updated{color:#9AA9B5;font-size:.85rem;margin-bottom:22px!important}

@@ -457,8 +457,9 @@
     bar.setAttribute("aria-label", "Gestion des cookies");
     bar.innerHTML =
       '<div class="cookie-inner">' +
-        '<p class="cookie-text">Ce site utilise des cookies pour améliorer ton expérience et mesurer l\'audience. ' +
-        'Tu peux accepter ou refuser leur utilisation.</p>' +
+        '<p class="cookie-text">Ce site utilise des cookies et traceurs pour améliorer ton expérience. ' +
+        'Les vidéos sont intégrées en mode confidentialité renforcée. ' +
+        '<a href="confidentialite.html" class="cookie-link">En savoir plus</a></p>' +
         '<div class="cookie-actions">' +
           '<button type="button" class="btn btn--ghost btn--sm" data-cookie="refused">Refuser</button>' +
           '<button type="button" class="btn btn--primary btn--sm" data-cookie="accepted">Accepter</button>' +
